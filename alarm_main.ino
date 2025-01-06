@@ -1,6 +1,10 @@
+// main ino file for the setup and loop functions 
+// here the main actions of the actual alarm system will be initiated 
+// whereas the specific functions using module libraries will be in other header file
 
 #include "RTC_and_LCD.h"
 #include "buzzer.h"
+#include "functions.h"
 
 // SQW PIN can not interfere with LCD pins or the screen will print unusual things...
 #define CLOCK_INTERRUPT_PIN 8
@@ -32,15 +36,5 @@ void loop() {
       clear();
     }
   }
-  else {
-    silence();
-  }
 }
 
-void count_second(int n) {
-
-  for (int i = 1; i <= n; i++) { // Loop 10 times
-    Serial.println(i); // Print the current count value [2, 3, 5]
-    delay(1000); // Add a small delay between prints [3, 9]
-  }
-}
