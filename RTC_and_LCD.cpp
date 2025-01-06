@@ -1,8 +1,13 @@
+// this file is for the LCD and RTC module
+// it is seperate to functions.cpp as it has too many of its own complexities
+// RTC and LCD are in one seperate header file together because 
+// to display RTC info on the LCD, it will need both libraries, so incorporating them is easier
 
-// THIS IS CODE FOR THE SET UP DISPLAY FOR THE RTC AND LCD SCREEN
-
-// function checkRTC checks if the RTC communication is successful or not
-// function display_time uses the LCD screen to display the current time 
+// here:
+// 1. the RTC will be set up to ensure I2c communication works
+// 2. the screen will be set up to display the time and date 
+// 3. additional functions for alarm functions
+//    ^^^ further info about these functions are commented within the functions
 
 #include <LiquidCrystal.h>
 #include <RTClib.h>
@@ -93,7 +98,7 @@ void display_time(void) {
   delay(1000); // Update every second
 }
 
-// this sets an alarm 10 seconds from now
+// this sets an alarm n seconds from now
 void timer_second(int n) {
     if(!rtc.setAlarm1(rtc.now() + TimeSpan(n), DS3231_A1_Second)) {
         Serial.print("Error, alarm for "); Serial.print(n); Serial.println(" seconds from now was NOT set!");
@@ -103,6 +108,7 @@ void timer_second(int n) {
     }
 }
 
+// this sets an alarm at a certain time 
 void set_alarm(void) {
     if(!rtc.setAlarm1(DateTime(0, 0, 0, 10, 30, 0), DS3231_A1_Hour)) {
         Serial.println("Error, alarm for 10:30AM wasn't set!");
