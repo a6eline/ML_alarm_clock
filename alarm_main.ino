@@ -1,7 +1,4 @@
 
-// This is a initial test of using the DS3231 and LiquidCrystal Libraries
-// I will be trying to display current time on the LCD screen
-
 #include "RTC_and_LCD.h"
 #include "buzzer.h"
 
