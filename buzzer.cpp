@@ -9,6 +9,10 @@ void silence(void) {
   Serial.println("Buzzer disabled, silence. . .");
 }
 
+void forever_beep(void) {
+  tone(BUZZER_PIN, 440); // A4
+}
+
 void beep(void) {
   tone(BUZZER_PIN, 440); delay(1000);// A4
   noTone(BUZZER_PIN); delay(1000);
@@ -16,6 +20,7 @@ void beep(void) {
 
 // do re mi fa so
 void play_song(void) {
+  // for(int n, )
   Serial.println(" Do Re Mi Fa So. . .");
   tone(BUZZER_PIN, 440); delay(1000); // A4
   tone(BUZZER_PIN, 494); delay(1000); // B4
