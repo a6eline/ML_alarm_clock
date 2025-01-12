@@ -25,32 +25,32 @@ RTC_DS3231 rtc;
 const char* dayNames[] = {"Sun" , "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 
 void checkRTC(void) {
-  lcd.begin(16,2);
-
-  if (!rtc.begin()) // if I2C communication with RTC is unsuccessful 
-  {
+  if (!rtc.begin()) { // if I2C communication with RTC is unsuccessful 
     lcd.print("I2C + RTC Error");
     while (1); // Halt if RTC is not found
   }
-
-  if (rtc.lostPower())  // if RTC has lost power
-  {
+  if (rtc.lostPower()) { // if RTC has lost power
     lcd.clear(); // clear the screen
     lcd.print("RTC lost power");
     delay(2000);
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); // adjust the date and time
   }
-
-  lcd.clear();
-  // update message to signal it is fine
-  lcd.print("RTC + LCD Sucessful"); 
-  delay(2000);
-  lcd.clear();
 }
 
 void alarm_setup(void) {
+    lcd.clear();
+    // update message to signal it is fine
+    lcd.print("RTC + LCD Sucessful"); 
+    delay(2000);
+    lcd.clear();
+    lcd.begin(16,2); // setting up the screen to be 16x2
+
+    rtc.writeSqwPinMode(DS3231_OFF);
+
     // set alarm 1, 2 flag to false (so alarm 1, 2 didn't happen so far)
     // if not done, this easily leads to problems, as both register aren't reset on reboot/recompile
+    rtc.disableAlarm(1);
+    rtc.disableAlarm(2);
     rtc.clearAlarm(1);
     rtc.clearAlarm(2);
 
@@ -118,19 +118,38 @@ void set_alarm(void) {
     }
 }
 
-// bool to check if the alarm has been cleared or not
-bool alarm_status(void) {
-  if (rtc.alarmFired(1)) {
-      Serial.print("Alarm has been fired!!!");
-      return true;
+// // bool to check if the alarm has been cleared or not
+// bool alarm_status(void) {
+//   if (rtc.alarmFired(1)) {
+//       Serial.print("Alarm has been fired!!!");
+//       return true;
+//   }
+//   else {
+//     return false;
+//   }
+// }
+
+void reset_alarm(int n) {
+  // there can only be alarm 1 or 2 - other numbers can result in a bug
+  if (n == 1 || n == 2) {
+    // resetting SQW and alarm 1 flag
+    // using setAlarm1, the next alarm could now be configurated
+    // parameter int n so that user can chose to reset alarm 1 or 2
+    if (rtc.alarmFired(n)) {
+        rtc.disableAlarm(n);
+        rtc.clearAlarm(n); 
+        Serial.println(" - Alarm cleared");
+    }
   }
   else {
-    return false;
+    Serial.println("Wrong parameter inputted for reset_alarm function in RTC_and_LCD.cpp");
   }
+
 }
 
-void clear(void) {
+void stop_alarm(void) {
   rtc.clearAlarm(1);
+  rtc.disableAlarm(1);
   Serial.println("...Alarm cleared");
 }
 
