@@ -6,6 +6,7 @@
 #include <Arduino.h>
 
 void silence(void);
+void forever_beep(void);
 void play_song(void);
 void beep(void);
 
