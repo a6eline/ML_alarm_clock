@@ -6,7 +6,6 @@
 #include "buzzer.h"
 #include "functions.h"
 
-
 void setup() {
   checkRTC();
   serial_setup(); button_setup(); alarm_setup();
