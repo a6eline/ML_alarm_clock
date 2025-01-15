@@ -18,12 +18,12 @@
 #include <Wire.h>
 #include "RTC_and_LCD.h"
 
-
-//---------------------------------------------------------------------SETUP----------------------------------------------------------------------------------------------
-
 // Creating objects of the LCD and RTC 
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7); //Pins: RS, E, D4, D5, D6, D7
 RTC_DS3231 rtc; 
+
+//---------------------------------------------------------------------SETUP----------------------------------------------------------------------------------------------
+
 
 void checkRTC(void) {
   lcd.clear(); // clear LCD so previous screen doesnt interfere
@@ -47,17 +47,19 @@ void alarm_setup(void) {
     lcd.clear();
     lcd.begin(16,2); // setting up the screen to be 16x2
     
+    pinMode(CLOCK_INTERRUPT_PIN, INPUT_PULLUP); // Setting sqw pinmode to high  
+    // The interupt is triggered when the pin falls from high to low
+    attachInterrupt(digitalPinToInterrupt(CLOCK_INTERRUPT_PIN), on_alarm, FALLING); 
+
     // stop oscillating signals at SQW Pin
     // otherwise setAlarm1 will fail
     rtc.writeSqwPinMode(DS3231_OFF);
 
     // set alarm 1, 2 flag to false (so alarm 1, 2 didn't happen so far)
     // if not done, this easily leads to problems, as both register aren't reset on reboot/recompile
-    rtc.disableAlarm(1);
-    rtc.disableAlarm(2);
-    rtc.clearAlarm(1);
-    rtc.clearAlarm(2);
-
+    rtc.disableAlarm(1); rtc.clearAlarm(1);
+    rtc.disableAlarm(2); rtc.clearAlarm(2);
+    
     // turn off alarm 2 (in case it isn't off already)
     // again, this isn't done at reboot, so a previously set alarm could easily go overlooked
     rtc.disableAlarm(2);
@@ -68,7 +70,6 @@ void alarm_setup(void) {
 // array to convert weekday number to a string 
 // dayNames[0] = Sun, 1 = Mon, 2 = Tue...
 const char* dayNames[] = {"Sun" , "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
-
 
 void display_time(void) {
   DateTime now = rtc.now();
@@ -111,7 +112,7 @@ void display_time(void) {
 // this sets an alarm n seconds from now
 void timer_second(int second) {
     Serial.print("Alarm for "); Serial.print(second); Serial.print(" sec(s");
-    if(!rtc.setAlarm1(rtc.now() + TimeSpan(0, 0, 0, second), DS3231_A1_Second)) {
+    if (!rtc.setAlarm1(rtc.now() + TimeSpan(0, 0, 0, second), DS3231_A1_Second)) {
          Serial.println(" from now has NOT been set!");
     }
     else {
@@ -123,7 +124,8 @@ void timer_second(int second) {
 void timer_minute(int minute, int second) {
   Serial.print("Alarm for "); 
   Serial.print(minute); Serial.print(" min(s) and "); Serial.print(second); Serial.print(" sec(s)"); 
-  if(!rtc.setAlarm1(rtc.now() + TimeSpan(0, 0, minute, second), DS3231_A1_Minute)) {
+
+  if (!rtc.setAlarm1(rtc.now() + TimeSpan(0, 0, minute, second), DS3231_A1_Minute)) {
         Serial.println(" from now was NOT set!");
   }
   else {
@@ -135,13 +137,45 @@ void timer_minute(int minute, int second) {
 void timer_hour(int hour, int minute) {
   Serial.print("Alarm for "); 
   Serial.print(hour); Serial.print(" hr(s) and "); Serial.print(minute); Serial.print(" min(s)"); 
-  if(!rtc.setAlarm1(rtc.now() + TimeSpan(0, hour, minute, 0), DS3231_A1_Hour)) {
+
+  if (!rtc.setAlarm1 (rtc.now() + TimeSpan(0, hour, minute, 0), DS3231_A1_Hour) ) {
         Serial.println(" from now was NOT set!");
   }
   else {
-      Serial.println(" from now was SUCCESSFULLY set!");
+      Serial.println (" from now was SUCCESSFULLY set!");
   }
 }
+
+// void timer(int hour, int minute, int second, ) {
+//   Serial.print("Alarm for "); 
+//   Serial.print(hour); Serial.print(" hr(s) and "); Serial.print(minute); Serial.print(" min(s)"); 
+
+//   if (!rtc.setAlarm1 (rtc.now() + TimeSpan(0, hour, minute, 0), DS3231_A1_Hour) ) {
+//         Serial.println(" from now was NOT set!");
+//   }
+//   else {
+//       Serial.println (" from now was SUCCESSFULLY set!");
+//   }
+// }
+
+
+// typedef enum 
+// {
+//     Hr,Min,Sec
+// } time_mode;
+
+// void timer_hour(int hour, int minute, char *[]) {
+//   Serial.print("Alarm for "); 
+//   Serial.print(hour); Serial.print(" hr(s) and "); Serial.print(minute); Serial.print(" min(s)"); 
+
+//   switch ()
+//   if(!rtc.setAlarm1(rtc.now() + TimeSpan(0, hour, minute, 0), DS3231_A1_Hour)) {
+//         Serial.println(" from now was NOT set!");
+//   }
+//   else {
+//       Serial.println(" from now was SUCCESSFULLY set!");
+//   }
+
 
 // TODO 
 // make an enum or class for modes to use as parameter 
@@ -207,13 +241,11 @@ bool delete_alarm(int n) {
   }
 }
 
-
-// delete later 
-void stop_alarm(void) {
-  rtc.clearAlarm(1);
-  rtc.disableAlarm(1);
-  Serial.println("...Alarm cleared");
+//-------------------------------------------------------------------ALARM------------------------------------------------------------------------------------------------
+void on_alarm() {
+    Serial.println("Alarm occured!");
 }
+
 
 // // bool to check if the alarm has been cleared or not
 // bool alarm_status(void) {
