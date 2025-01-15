@@ -5,6 +5,8 @@
 #define BUZZER_H
 #include <Arduino.h>
 
+#define BUZZER_PIN 9
+
 void buzzer_setup(void);
 void silence(void);
 void forever_beep(void);
