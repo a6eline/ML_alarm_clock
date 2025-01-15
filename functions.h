@@ -4,9 +4,17 @@
 #define FUNCTIONS_H
 #include <Arduino.h>
 
-void count_second(int n);
-// bool button_status(void);
+#define BUTTON_PIN 10
+
+//------------------------BUTTON-------------------------------
+void button_setup(void);
+bool button_status(void);
 void on_button();
-void on_alarm();
+
+//------------------------BUTTON-------------------------------
+void serial_setup(void);
+
+//------------------------MISC-------------------------------
+void count_second(int n);
 
 #endif
