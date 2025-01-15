@@ -110,19 +110,32 @@ void display_time(void) {
 
 // this sets an alarm n seconds from now
 void timer_second(int second) {
-    Serial.print("Alarm for "); Serial.print(second);
+    Serial.print("Alarm for "); Serial.print(second); Serial.print(" sec(s");
     if(!rtc.setAlarm1(rtc.now() + TimeSpan(0, 0, 0, second), DS3231_A1_Second)) {
-         Serial.println(" seconds from now has NOT been set!");
+         Serial.println(" from now has NOT been set!");
     }
     else {
-        Serial.println(" seconds from now has SUCCESSFULLY been set!"); 
+        Serial.println(" from now has SUCCESSFULLY been set!"); 
     }
 }
 
+// this sets a timer for x minutes and y seconds from now
 void timer_minute(int minute, int second) {
   Serial.print("Alarm for "); 
-  Serial.print(minute); Serial.print(" mins and "); Serial.print(second); Serial.print("seconds"); 
+  Serial.print(minute); Serial.print(" min(s) and "); Serial.print(second); Serial.print(" sec(s)"); 
   if(!rtc.setAlarm1(rtc.now() + TimeSpan(0, 0, minute, second), DS3231_A1_Minute)) {
+        Serial.println(" from now was NOT set!");
+  }
+  else {
+      Serial.println(" from now was SUCCESSFULLY set!");
+  }
+}
+
+// this sets an alarm for x hours and y minutes from now
+void timer_hour(int hour, int minute) {
+  Serial.print("Alarm for "); 
+  Serial.print(hour); Serial.print(" hr(s) and "); Serial.print(minute); Serial.print(" min(s)"); 
+  if(!rtc.setAlarm1(rtc.now() + TimeSpan(0, hour, minute, 0), DS3231_A1_Hour)) {
         Serial.println(" from now was NOT set!");
   }
   else {
