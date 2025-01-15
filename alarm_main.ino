@@ -35,7 +35,8 @@ void setup() {
   // timer_second(3);
   // count_second(3);
 
-  set_alarm(); // timer for every minute
+  //set_alarm(); // timer for every minute
+  set_daily_alarm(12, 15);
 }
 
 void loop() {
@@ -48,7 +49,9 @@ void loop() {
       delete_alarm(1);       
       on_button();
       silence();
-      set_alarm(); // set another alarm (was cleared by reset_alarm)
+      // below, if you want the alarm to repeat...
+      //  ...copy the alarm/timer function from setup below.
+      set_daily_alarm(12, 15);
     }
   }
 
