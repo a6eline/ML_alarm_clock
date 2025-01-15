@@ -2,10 +2,6 @@
 
 #include "buzzer.h"
 
-#define BUZZER_PIN 9
-
-// void buzzer_toggle()
-
 void buzzer_setup(void) {
   pinMode(BUZZER_PIN, OUTPUT);
 }
