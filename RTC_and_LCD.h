@@ -2,16 +2,23 @@
 #define RTC_AND_LCD_H
 #include <Arduino.h>
 
-// set up functions
+//------------------------SETUP-------------------------------
 void checkRTC(void);
+void alarm_setup(void);
+
+//------------------------DISPLAY-------------------------------
 void display_time(void);
 
-// alarm functions
-void alarm_setup(void);
-void timer_second(int n);
+//------------------------TIMER-------------------------------
+void timer_second(int second);
+void timer_minute(int minute, int second);
+
+//------------------------ALARM-------------------------------
 void set_alarm(void);
-// bool alarm_status(void); // checks if the alarm has been fired and returns true or false
-void reset_alarm(int n);
+void set_daily_alarm(int hour, int minute);
+
+//------------------------RESET-------------------------------
+bool delete_alarm(int n);
 void stop_alarm(void);
 
 #endif

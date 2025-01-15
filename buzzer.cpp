@@ -4,18 +4,19 @@
 
 #define BUZZER_PIN 9
 
+// void buzzer_toggle()
+
+void buzzer_setup(void) {
+  pinMode(BUZZER_PIN, OUTPUT);
+}
+
 void silence(void) {
   noTone(BUZZER_PIN);
   Serial.println("Buzzer disabled, silence. . .");
 }
 
-void forever_beep(void) {
-  tone(BUZZER_PIN, 440); // A4
-}
-
 void beep(void) {
-  tone(BUZZER_PIN, 440); delay(1000);// A4
-  noTone(BUZZER_PIN); delay(1000);
+  tone(BUZZER_PIN, 440); //A$
 }
 
 // do re mi fa so

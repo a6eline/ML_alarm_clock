@@ -10,33 +10,48 @@
 #define CLOCK_INTERRUPT_PIN 8
 #define BUTTON_PIN 10
 
+// typedef enum {
+//     BTN_ON,
+//     BTN_OFF
+// } button_state;
+
+// button_state state = BTN_OFF; // button starts OFF 
+
+
 void setup() {
+  Serial.begin(9600); // Setup for serial monitor 
+  while (!Serial);
+
   checkRTC();
   alarm_setup();
 
   pinMode(BUTTON_PIN, INPUT); // setting button to be an input pin 
   pinMode(CLOCK_INTERRUPT_PIN, INPUT_PULLUP); // Setting sqw pinmode to high  
-  attachInterrupt(digitalPinToInterrupt(CLOCK_INTERRUPT_PIN), play_song, FALLING); // The interupt is triggered when the pin falls from high to low
-  attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), play_song, FALLING); //--> this will become interupt for buzzer soon
+  attachInterrupt(digitalPinToInterrupt(CLOCK_INTERRUPT_PIN), on_alarm, FALLING); // The interupt is triggered when the pin falls from high to low
+  attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), silence, FALLING); //--> this will become interupt for buzzer soon
 
-  Serial.begin(9600); // Setup for serial monitor 
   Serial.println("Alarm Clock with DS3231 module and RTClib library..."); // Introduction
 
-  timer_second(3);
-  count_second(3);
+  // timer_second(3);
+  // count_second(3);
+
+  set_alarm(); // timer for every minute
 }
 
 void loop() {
   display_time();
 
   if(digitalRead(CLOCK_INTERRUPT_PIN) == LOW) { 
-    play_song();
-    if(digitalRead(BUTTON_PIN) == HIGH) {       
-      Serial.println("Button Pressed");
+    on_alarm();
+    beep();
+    if(digitalRead(BUTTON_PIN) == HIGH) {
+      delete_alarm(1);       
+      on_button();
       silence();
-      reset_alarm(1);
+      set_alarm(); // set another alarm (was cleared by reset_alarm)
     }
   }
+
   // if(digitalRead(BUTTON_PIN) == HIGH) { 
   //   Serial.println("Button Pressed");
   // }
