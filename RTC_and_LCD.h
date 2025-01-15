@@ -12,6 +12,7 @@ void display_time(void);
 //------------------------TIMER-------------------------------
 void timer_second(int second);
 void timer_minute(int minute, int second);
+void timer_hour(int hour, int minute);
 
 //------------------------ALARM-------------------------------
 void set_alarm(void);
