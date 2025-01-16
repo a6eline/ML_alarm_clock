@@ -14,7 +14,7 @@
 //      ^further info about these functions are commented within the functions
 
 #include <LiquidCrystal.h>
-#include <RTClib.h>
+// #include <RTClib.h>
 #include <Wire.h>
 #include "RTC_and_LCD.h"
 
@@ -146,17 +146,21 @@ void timer_hour(int hour, int minute) {
   }
 }
 
-// void timer(int hour, int minute, int second, ) {
-//   Serial.print("Alarm for "); 
-//   Serial.print(hour); Serial.print(" hr(s) and "); Serial.print(minute); Serial.print(" min(s)"); 
+// this is a timer which can go from seconds to hours
+// Ds3231Alarm1Mode is an enum which is defined in RTClib.h line 55 
+//  ^https://github.com/adafruit/RTClib/blob/master/src/RTClib.h#L378
+ 
+void timer(int hour, int minute, int second, Ds3231Alarm1Mode alarm_mode) {
+  Serial.print("Alarm for "); 
+  Serial.print(hour); Serial.print(" hr(s) and "); Serial.print(minute); Serial.print(" min(s)"); 
 
-//   if (!rtc.setAlarm1 (rtc.now() + TimeSpan(0, hour, minute, 0), DS3231_A1_Hour) ) {
-//         Serial.println(" from now was NOT set!");
-//   }
-//   else {
-//       Serial.println (" from now was SUCCESSFULLY set!");
-//   }
-// }
+  if (!rtc.setAlarm1 (rtc.now() + TimeSpan(0, hour, minute, second), alarm_mode) ) {
+        Serial.println(" from now was NOT set!");
+  }
+  else {
+      Serial.println (" from now was SUCCESSFULLY set!");
+  }
+}
 
 
 // typedef enum 
