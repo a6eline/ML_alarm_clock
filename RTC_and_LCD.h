@@ -1,9 +1,9 @@
 #ifndef RTC_AND_LCD_H
 #define RTC_AND_LCD_H
 #include <Arduino.h>
+#include <RTClib.h>
 
 #define CLOCK_INTERRUPT_PIN 8
-
 
 //------------------------SETUP-------------------------------
 void checkRTC(void);
@@ -16,6 +16,7 @@ void display_time(void);
 void timer_second(int second);
 void timer_minute(int minute, int second);
 void timer_hour(int hour, int minute);
+void timer(int hour, int minute, int second, Ds3231Alarm1Mode alarm_mode);
 
 //------------------------ALARM-------------------------------
 void set_alarm(void);
