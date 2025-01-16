@@ -5,6 +5,39 @@
 
 #define CLOCK_INTERRUPT_PIN 8
 
+// Renaming Alarm mode enums as it was too lengthy
+// Ds3231Alarm1Mode is an enum which is defined in RTClib.h line 55 
+//  ^https://github.com/adafruit/RTClib/blob/master/src/RTClib.h#L378
+
+// ORIGINAL DS3231 Alarm modes for alarm 1 and 2 . . .
+
+// enum Ds3231Alarm1Mode {
+//   DS3231_A1_PerSecond = 0x0F,
+//   DS3231_A1_Second = 0x0E,
+//   DS3231_A1_Minute = 0x0C,
+//   DS3231_A1_Hour = 0x08,
+//   DS3231_A1_Date = 0x00,
+//   DS3231_A1_Day = 0x10
+// };
+
+// enum Ds3231Alarm2Mode {
+//   DS3231_A2_PerMinute = 0x7,
+//   DS3231_A2_Minute = 0x6,
+//   DS3231_A2_Hour = 0x4,
+//   DS3231_A2_Date = 0x0,
+//   DS3231_A2_Day = 0x8
+// };
+
+// changing Ds3231Alarm1Mode names...
+constexpr auto A1_SECOND = DS3231_A1_Second;
+constexpr auto A1_MINUTE = DS3231_A1_Minute;
+constexpr auto A1_HOUR = DS3231_A1_Hour;
+
+// changing Ds3231Alarm2Mode names...
+constexpr auto A2_MINUTE = DS3231_A2_Minute;
+constexpr auto A2_HOUR = DS3231_A2_Hour;
+
+
 //------------------------SETUP-------------------------------
 void checkRTC(void);
 void alarm_setup(void);
@@ -31,7 +64,7 @@ void on_alarm();
 #endif
 
 
-// // Here's your header for renaming shit
+// // header for renaming 
 
 // constexpr auto whatever_name_you_want = DS3231_A1_Minute;
 // constexpr auto whatever_name_you_want = DS3231_A1_Hour;
