@@ -11,11 +11,12 @@ void setup() {
   serial_setup(); button_setup(); alarm_setup();
   Serial.println("Alarm Clock with DS3231 module and RTClib library..."); 
 
-  timer_second(3);
-  count_second(3);
+  // timer_second(3);
+  // timer(0, 0, 3, DS3231_A1_Hour);
+  // count_second(3);
 
   //set_alarm(); // timer for every minute
-  //set_daily_alarm(12, 15); // everyday alarm at HH:MM 
+  set_daily_alarm(10, 45); // everyday alarm at HH:MM 
 }
 
 void loop() {
@@ -30,7 +31,7 @@ void loop() {
       silence();
       // below, if you want the alarm to repeat...
       //  ...copy the alarm/timer function from setup below.
-      // set_daily_alarm(12, 15);
+      timer(0, 5, 0, DS3231_A1_Hour);
     }
   }
 }
