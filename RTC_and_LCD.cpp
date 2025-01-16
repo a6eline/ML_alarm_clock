@@ -162,6 +162,22 @@ void timer(int hour, int minute, int second, Ds3231Alarm1Mode alarm_mode) {
   }
 }
 
+// timer function but with template so both Ds3231Alarm1Mode and Ds3231Alarm2Mode can be used:
+// when using in main type:
+//    timer<ds3231Alarm( 1 or 2 )Mode> (hourInt, minInt, secondInt, A1_SECOND);
+//    timer<auto> (hourInt, mintInt, secondInt, A1_SECOND);
+// template <typename alarm_mode> void timer_template(int hour, int minute, int second, typename alarm_mode) {
+//   Serial.print("Alarm for "); 
+//   Serial.print(hour); Serial.print(" hr(s) and "); Serial.print(minute); Serial.print(" min(s)"); 
+
+//   if (!rtc.setAlarm1 (rtc.now() + TimeSpan(0, hour, minute, second), alarm_mode) ) {
+//         Serial.println(" from now was NOT set!");
+//   }
+//   else {
+//       Serial.println (" from now was SUCCESSFULLY set!");
+//   }
+// }
+
 
 // typedef enum 
 // {
