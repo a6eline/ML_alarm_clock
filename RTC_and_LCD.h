@@ -46,10 +46,9 @@ void alarm_setup(void);
 void display_time(void);
 
 //------------------------TIMER-------------------------------
-void timer_second(int second);
-void timer_minute(int minute, int second);
-void timer_hour(int hour, int minute);
 void timer(int hour, int minute, int second, Ds3231Alarm1Mode alarm_mode);
+// template <typename alarmT> 
+//   void timer_template(int hour, int minute, int second, alarmT alarm_mode);
 
 //------------------------ALARM-------------------------------
 void set_alarm(void);
@@ -70,7 +69,7 @@ void on_alarm();
 // constexpr auto whatever_name_you_want = DS3231_A1_Hour;
 // // etc...
 
-// // For your timer function you can do this
+// // for timer function, can be done like this 
 
 // struct Duration {int hour = 0; int minute = 0; int second = 0};
 // enum class AlarmMode {Alarm1, Alarm2}:
@@ -100,10 +99,8 @@ void on_alarm();
 
 // set_timer<AlarmMode::Alarm1>({.minute = 1});
 // set_timer<AlarmMode::Alarm2>({.hour = 1, .minute = 2});
-
 // {
 //     using AlarmMode::Alarm1, AlarmMode::Alarm2;
-    
 //     set_timer<Alarm1>({.minute = 1});
 //     set_timer<Alarm2>({.hour = 1, .minute = 2});
 // }
