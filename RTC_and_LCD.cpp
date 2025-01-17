@@ -109,47 +109,7 @@ void display_time(void) {
 
 //---------------------------------------------------------------------TIMER----------------------------------------------------------------------------------------------
 
-// this sets an alarm n seconds from now
-void timer_second(int second) {
-    Serial.print("Alarm for "); Serial.print(second); Serial.print(" sec(s");
-    if (!rtc.setAlarm1(rtc.now() + TimeSpan(0, 0, 0, second), DS3231_A1_Second)) {
-         Serial.println(" from now has NOT been set!");
-    }
-    else {
-        Serial.println(" from now has SUCCESSFULLY been set!"); 
-    }
-}
-
-// this sets a timer for x minutes and y seconds from now
-void timer_minute(int minute, int second) {
-  Serial.print("Alarm for "); 
-  Serial.print(minute); Serial.print(" min(s) and "); Serial.print(second); Serial.print(" sec(s)"); 
-
-  if (!rtc.setAlarm1(rtc.now() + TimeSpan(0, 0, minute, second), DS3231_A1_Minute)) {
-        Serial.println(" from now was NOT set!");
-  }
-  else {
-      Serial.println(" from now was SUCCESSFULLY set!");
-  }
-}
-
-// this sets an alarm for x hours and y minutes from now
-void timer_hour(int hour, int minute) {
-  Serial.print("Alarm for "); 
-  Serial.print(hour); Serial.print(" hr(s) and "); Serial.print(minute); Serial.print(" min(s)"); 
-
-  if (!rtc.setAlarm1 (rtc.now() + TimeSpan(0, hour, minute, 0), DS3231_A1_Hour) ) {
-        Serial.println(" from now was NOT set!");
-  }
-  else {
-      Serial.println (" from now was SUCCESSFULLY set!");
-  }
-}
-
-// this is a timer which can go from seconds to hours
-// Ds3231Alarm1Mode is an enum which is defined in RTClib.h line 55 
-//  ^https://github.com/adafruit/RTClib/blob/master/src/RTClib.h#L378
- 
+// this is a timer which can go from seconds to hours 
 void timer(int hour, int minute, int second, Ds3231Alarm1Mode alarm_mode) {
   Serial.print("Alarm for "); 
   Serial.print(hour); Serial.print(" hr(s) and "); Serial.print(minute); Serial.print(" min(s)"); 
@@ -162,51 +122,20 @@ void timer(int hour, int minute, int second, Ds3231Alarm1Mode alarm_mode) {
   }
 }
 
-// timer function but with template so both Ds3231Alarm1Mode and Ds3231Alarm2Mode can be used:
+// templated timer function so both Ds3231Alarm1Mode and Ds3231Alarm2Mode can be used:
 // when using in main type:
 //    timer<ds3231Alarm( 1 or 2 )Mode> (hourInt, minInt, secondInt, A1_SECOND);
 //    timer<auto> (hourInt, mintInt, secondInt, A1_SECOND);
-// template <typename alarm_mode> void timer_template(int hour, int minute, int second, typename alarm_mode) {
+// template <typename alarmT> 
+// void timer_template(int hour, int minute, int second, alarmT alarm_mode) {
 //   Serial.print("Alarm for "); 
-//   Serial.print(hour); Serial.print(" hr(s) and "); Serial.print(minute); Serial.print(" min(s)"); 
+//   Serial.print(hour); Serial.print(" hr(s) and "); Serial.print(minute); Serial.print(" min(s)"); Serial.print(second); Serial.print(" sec(s)");
 
 //   if (!rtc.setAlarm1 (rtc.now() + TimeSpan(0, hour, minute, second), alarm_mode) ) {
 //         Serial.println(" from now was NOT set!");
 //   }
 //   else {
 //       Serial.println (" from now was SUCCESSFULLY set!");
-//   }
-// }
-
-
-// typedef enum 
-// {
-//     Hr,Min,Sec
-// } time_mode;
-
-// void timer_hour(int hour, int minute, char *[]) {
-//   Serial.print("Alarm for "); 
-//   Serial.print(hour); Serial.print(" hr(s) and "); Serial.print(minute); Serial.print(" min(s)"); 
-
-//   switch ()
-//   if(!rtc.setAlarm1(rtc.now() + TimeSpan(0, hour, minute, 0), DS3231_A1_Hour)) {
-//         Serial.println(" from now was NOT set!");
-//   }
-//   else {
-//       Serial.println(" from now was SUCCESSFULLY set!");
-//   }
-
-
-// TODO 
-// make an enum or class for modes to use as parameter 
-// remake set_alarm function to take in number parameters for the dateTime(...)
-
-// void set_timer(int hour, int minute, int second) {
-//   if(!rtc.setAlarm1(rtc.now() + TimeSpan(0, hour, minute, second), DS3231_A1_Hour)) {
-//       Serial.print("Error, alarm for "); Serial.print(minute); Serial.println(" seconds from now was NOT set!");
-//   }
-//   else {
-//       Serial.print("Alarm is set for "); Serial.print(minute); Serial.println(" seconds from now!"); 
 //   }
 // }
 
