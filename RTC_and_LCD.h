@@ -3,7 +3,7 @@
 #include <Arduino.h>
 #include <RTClib.h>
 
-#define CLOCK_INTERRUPT_PIN 8
+#define CLOCK_INTERRUPT_PIN 1
 
 // Renaming Alarm mode enums as it was too lengthy
 // Ds3231Alarm1Mode is an enum which is defined in RTClib.h line 55 
