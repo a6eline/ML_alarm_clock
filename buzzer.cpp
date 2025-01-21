@@ -7,12 +7,12 @@ void buzzer_setup(void) {
 }
 
 void silence(void) {
-  noTone(BUZZER_PIN);
+  digitalWrite(BUZZER_PIN, LOW);
   Serial.println("Buzzer disabled, silence. . .");
 }
 
 void beep(void) {
-  tone(BUZZER_PIN, 440); //A$
+  digitalWrite(BUZZER_PIN, HIGH);
 }
 
 // do re mi fa so
