@@ -5,7 +5,7 @@
 #define BUZZER_H
 #include <Arduino.h>
 
-#define BUZZER_PIN 9
+#define BUZZER_PIN 0
 
 void buzzer_setup(void);
 void silence(void);
