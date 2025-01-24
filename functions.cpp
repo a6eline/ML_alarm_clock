@@ -59,9 +59,14 @@ void on_button() {
 //-------------------------------------------------------------------MISC------------------------------------------------------------------------------------------------
 
 void count_second(int n) {
-  for (int i = 1; i <= n; i++) { // Loop 10 times
-    Serial.println(i); // Print the current count value [2, 3, 5]
-    delay(1000); // Add a small delay between prints [3, 9]
+  static unsigned long timer_millis = millis();
+  const int one_sec = 1000;
+
+  for (int i = 1; i <= n; i++) { // Loop n times
+    if (millis() - timer_millis > one_sec ) {
+      Serial.println(n);
+      timer_millis = millis();
+    }
   }
 }
 
