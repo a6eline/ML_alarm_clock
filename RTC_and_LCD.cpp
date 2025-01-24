@@ -20,7 +20,6 @@ RTC_DS3231 rtc;
 
 //---------------------------------------------------------------------RTC----------------------------------------------------------------------------------------------
 
-
 void checkRTC(void) {
   //lcd.clear(); // clear LCD so previous screen doesnt interfere
   if (!rtc.begin()) { // if I2C communication with RTC is unsuccessful 
@@ -70,45 +69,51 @@ void lcd_test(void) {
   lcd.print("Test");
 }
 
-// array to convert weekday number to a string 
-// dayNames[0] = Sun, 1 = Mon, 2 = Tue...
+// array to convert weekday number to a string ---> dayNames[0] = Sun, 1 = Mon, 2 = Tue...
 const char* dayNames[] = {"Sun" , "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 
 // RTC_and_LCD.cpp --- display the current time onto the LCD screen via DS3231 RTC data
 void display_time(void) {
-  DateTime now = rtc.now();
+  static unsigned long display_millis = millis();   // a static variable so it only executes once at the start
+  const int one_sec = 1000;                         // 1000 millis is 1 second
 
-  lcd.clear(); // Clear the LCD screen
+  if (millis() - display_millis > one_sec) {
+    DateTime now = rtc.now(); // update the now time
+    lcd.clear();              // Clear the LCD screen
 
-  // Display the day of the week and time on the first line
-  lcd.setCursor(0, 0); // Set cursor to column 0, row 0
-  lcd.print(dayNames[now.dayOfTheWeek()]); // Day of the week
-  lcd.print(' ');
+    //-------------------------DISPLAY-WEEKDAY-------------------------------
+    lcd.setCursor(0, 0);                          // set cursor to column 0, row 0
+    lcd.print(dayNames[now.dayOfTheWeek()]);      // day of the week
+    lcd.print(' ');                               // printing whitespace before time display
 
-  // Display the time in 12-hour format
-  int hour = now.hour() % 12;
-  if (hour == 0) hour = 12; // Adjust for 12-hour format
-  if (hour < 10) lcd.print('0'); // Add leading zero for hour if necessary
-  lcd.print(hour, DEC);
-  lcd.print(':');
-  if (now.minute() < 10) lcd.print('0'); // Add leading zero for minute if necessary
-  lcd.print(now.minute(), DEC);
-  lcd.print(':');
-  if (now.second() < 10) lcd.print('0'); // Add leading zero for second if necessary
-  lcd.print(now.second(), DEC);
-  lcd.print(now.hour() < 12 ? " AM" : " PM"); // Display AM/PM
+    //-------------------------DISPLAY-12HR-------------------------------
+    int hour = now.hour() % 12;
+    if (hour == 0) hour = 12;                     // adjust for 12-hour format
+    if (hour < 10) lcd.print('0');                // add leading zero for hour if necessary
+    lcd.print(hour, DEC); lcd.print(':');         // printing the current time hour
 
-  // Display the date on the second line
-  lcd.setCursor(0, 1); // Set cursor to column 0, row 1
-  if (now.day() < 10) lcd.print('0'); // Add leading zero for day if necessary
-  lcd.print(now.day(), DEC);
-  lcd.print('.');
-  if (now.month() < 10) lcd.print('0'); // Add leading zero for month if necessary
-  lcd.print(now.month(), DEC);
-  lcd.print('.');
-  lcd.print(now.year(), DEC);
+    //-------------------------DISPLAY-MINUTE-------------------------------
+    if (now.minute() < 10) lcd.print('0');        // add leading zero for minute if necessary
+    lcd.print(now.minute(), DEC); lcd.print(':'); // print the current minute
+    
+    //-------------------------DISPLAY-SECOND-------------------------------
+    if (now.second() < 10) lcd.print('0');        // add leading zero for second if necessary
+    lcd.print(now.second(), DEC);                 // print the current second
+    lcd.print(now.hour() < 12 ? " AM" : " PM");   // display AM/PM
 
-  delay(100); // Update every second
+    //-------------------------DISAPLY-DAY-------------------------------
+    lcd.setCursor(0, 1);                          // set cursor to column 0, row 1
+    if (now.day() < 10) lcd.print('0');           // add leading zero for day if necessary
+    lcd.print(now.day(), DEC); lcd.print('.');    // print the current day 
+    
+    //-------------------------DISPLAY-DATE-------------------------------
+    if (now.month() < 10) lcd.print('0');         // add leading zero for month if necessary
+    lcd.print(now.month(), DEC); lcd.print('.');  // print the current month
+    lcd.print(now.year(), DEC);                   // print the current year
+    
+    //-------------------------UPDATE-MILLIS-------------------------------
+    display_millis = millis();
+  }
 }
 
 //---------------------------------------------------------------------TIMER----------------------------------------------------------------------------------------------
