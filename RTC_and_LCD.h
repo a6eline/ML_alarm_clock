@@ -1,9 +1,12 @@
 #ifndef RTC_AND_LCD_H
 #define RTC_AND_LCD_H
+
 #include <Arduino.h>
 #include <RTClib.h>
+#include <LiquidCrystal.h>
+#include <Wire.h>
 
-#define CLOCK_INTERRUPT_PIN 1
+#define CLOCK_INTERRUPT_PIN 4
 
 // Renaming Alarm mode enums as it was too lengthy
 // Ds3231Alarm1Mode is an enum which is defined in RTClib.h line 55 
@@ -40,9 +43,11 @@ constexpr auto A2_HOUR = DS3231_A2_Hour;
 
 //------------------------SETUP-------------------------------
 void checkRTC(void);
-void alarm_setup(void);
+void rtc_setup(void);
 
-//------------------------DISPLAY-------------------------------
+//------------------------LCD-------------------------------
+void lcd_setup(void);
+void lcd_test(void);
 void display_time(void);
 
 //------------------------TIMER-------------------------------
@@ -55,7 +60,7 @@ void set_alarm(void);
 void set_daily_alarm(int hour, int minute);
 
 //------------------------RESET-------------------------------
-bool delete_alarm(int n);
+void delete_alarm(int alarmNumber);
 
 //------------------------MISC-------------------------------
 void on_alarm();
