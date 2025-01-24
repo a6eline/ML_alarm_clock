@@ -64,7 +64,6 @@ void loop() {
 
     //-------------------------ALARM-OFF-------------------------------
     case ALARM_STATE::ALARM_OFF: {
-      display_time();
       // CHECK CONTINUOUSLY FOR ALARM TO BE FIRED 
       if ( digitalRead (CLOCK_INTERRUPT_PIN) == HIGH ) { 
         beep();
