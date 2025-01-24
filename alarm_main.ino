@@ -10,13 +10,6 @@
 // buzzer pin is 3
 // lcd pins are 5-10
 
-enum class ALARM_STATE{
-  ALARM_OFF,
-  ALARM_ON,
-  BTN_PRESSING,
-  BTN_RELEASED };
-
-ALARM_STATE alarm_state = ALARM_STATE::ALARM_OFF;
 
 //---------------------------------------------------------------------SETUP----------------------------------------------------------------------------------------------
 
@@ -33,6 +26,7 @@ void setup() {
   //------------------------------------------SETUP-FUNCTIONS---------------------------------------
   lcd_setup(); // setup the LCD
   checkRTC(); rtc_setup(); // check that the rtc is working 
+  display_time();
   serial_setup(); led_setup(); buzzer_setup(); button_setup();// extra modules/component setups // 
   Serial.println("Serial Test for Alarm Clock"); 
   
@@ -46,12 +40,17 @@ void setup() {
 
   // set_alarm(); // timer for every minute
   // set_daily_alarm(7, 15); // everyday alarm at HH:MM   
-
-  silence();
 }
 
 
 //---------------------------------------------------------------------ALARM-LOOP----------------------------------------------------------------------------------------------
+
+enum class ALARM_STATE : uint8_t {
+  DEFAULT_STATE,  // input alarm    --> inputting alarm fired     ---> state = ALARM_OFF
+  ALARM_ON,       // beeps buzzer   --> inputting button pressed  ---> state = ALARM_ON
+  ALARM_OFF,      // silence buzzer --> deletes alarm             ---> state = DEFAULT
+};
+static ALARM_STATE alarm_state = ALARM_STATE::DEFAULT_STATE; // setting up the initial alarm state
 
 void loop() {
 
@@ -62,34 +61,32 @@ void loop() {
 
   switch(alarm_state) {
 
-    //-------------------------ALARM-OFF-------------------------------
-    case ALARM_STATE::ALARM_OFF: {
-      // CHECK CONTINUOUSLY FOR ALARM TO BE FIRED 
+    //-------------------------DEFAULT-------------------------------
+    case ALARM_STATE::DEFAULT_STATE: {
+      Serial.println("STATE --> DEFAULT");
+
+      // checking if alarm is fired --> DS3231 SQW pin == HIGH
       if ( digitalRead (CLOCK_INTERRUPT_PIN) == HIGH ) { 
-        beep();
         alarm_state = ALARM_STATE::ALARM_ON; }
-      break; }
+      break; } 
 
-    //-------------------------ALARM-FIRED-------------------------------
+    //-------------------------ALARM_ON-------------------------------
     case ALARM_STATE::ALARM_ON: {
+      Serial.println("STATE --> ALARM ON");
+      beep();
+      if( button_status() == true) { 
+        alarm_state = ALARM_STATE::ALARM_OFF; }
+      break; }    
       
-      alarm_state = ALARM_STATE::BTN_PRESSING; // MOVE TO BEEP STATE 
-      break; }
+    //-------------------------ALARM_OFF---------------------------
+    case ALARM_STATE::ALARM_OFF: {
+      Serial.println("STATE --> ALARM OFF");
+      silence(); 
+      alarm_state = ALARM_STATE::DEFAULT_STATE;
+      break; } 
 
-    //-------------------------BUTTON-PRESSING---------------------------
-    case ALARM_STATE::BTN_PRESSING: {
-      if( button_status() == true ) { 
-        alarm_state = ALARM_STATE::BTN_RELEASED; }
-      break; }
-
-    //-------------------------BUTTON-RELEASED-----------------------------
-    case ALARM_STATE::BTN_RELEASED:{
-      silence(); // shut alarm up
-      delete_alarm(1); // delete the alarm
-      alarm_state = ALARM_STATE::ALARM_OFF;
-      break; }
-    
-    default: alarm_state = ALARM_STATE::ALARM_OFF;
+    default: 
+      Serial.print("Something is wrong ---> switch case is default... "); 
   }
   
 
