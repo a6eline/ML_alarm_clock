@@ -37,7 +37,7 @@ void led_status(int status) {
 // functions.cpp --- sets up the button pins, attatches a silence interupt.
 void button_setup(void) {
   pinMode(BUTTON_PIN, INPUT); // setting button to be an input pin 
-  attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), silence, FALLING); 
+  // attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), on_button, FALLING); 
 }
 
 // checks whether or not button has been pressed.
