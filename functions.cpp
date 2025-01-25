@@ -48,13 +48,10 @@ bool button_status(void) {
 
   if(digitalRead(BUTTON_PIN) == HIGH) {
     if (current_time - prev_btn_time > DEBOUNCE_DELAY) {
-      prev_btn_time = current_time;
-    }
-    return true; 
-  }
+      prev_btn_time = current_time;}
+    return true; }
   else {
-    return false;
-  }
+    return false; }
 }
 
 // functions.cpp --- if button is on, it will serial print ("Button pressed!")
