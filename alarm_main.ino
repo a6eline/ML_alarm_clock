@@ -10,12 +10,13 @@
 // buzzer pin is 3
 // lcd pins are 5-10
 
+enum class ALARM_STATE : uint8_t { // FINITE STATE MACHINE STATES
+  DEFAULT_STATE,  // input alarm    --> inputting alarm fired     ---> state = ALARM_OFF
+  ALARM_ON,       // beeps buzzer   --> inputting button pressed  ---> state = ALARM_ON
+  ALARM_OFF,      // silence buzzer --> deletes alarm             ---> state = DEFAULT
+}; 
 
 //---------------------------------------------------------------------SETUP----------------------------------------------------------------------------------------------
-
-uint32_t prev_time = 0;
-uint32_t next_time = 0;
-
 
 void setup() {
 
@@ -45,26 +46,22 @@ void setup() {
 
 //---------------------------------------------------------------------ALARM-LOOP----------------------------------------------------------------------------------------------
 
-enum class ALARM_STATE : uint8_t {
-  DEFAULT_STATE,  // input alarm    --> inputting alarm fired     ---> state = ALARM_OFF
-  ALARM_ON,       // beeps buzzer   --> inputting button pressed  ---> state = ALARM_ON
-  ALARM_OFF,      // silence buzzer --> deletes alarm             ---> state = DEFAULT
-};
-static ALARM_STATE alarm_state = ALARM_STATE::DEFAULT_STATE; // setting up the initial alarm state
-
 void loop() {
 
   display_time(); // display the time onto LCD screen (RTC_and_LCD.cpp/h)
-  // uint32_t timeMs = millis(); // fetch the current time
 
   //--------------------------------------FINITE-STATE-MACHINE----------------------------------------------
+  
+  static ALARM_STATE alarm_state = ALARM_STATE::DEFAULT_STATE;    // current state 
+  static ALARM_STATE previous_state = ALARM_STATE::DEFAULT_STATE; // previous state 
+  static bool first_state = true;                                 // first state (used for printing)
+
+  // function to check and print the state changes
+  check_and_print_current_state(alarm_state, previous_state, first_state);
 
   switch(alarm_state) {
-
     //-------------------------DEFAULT-------------------------------
     case ALARM_STATE::DEFAULT_STATE: {
-      Serial.println("STATE --> DEFAULT");
-
       // checking if alarm is fired --> DS3231 SQW pin == HIGH
       if ( digitalRead (CLOCK_INTERRUPT_PIN) == HIGH ) { 
         alarm_state = ALARM_STATE::ALARM_ON; }
@@ -72,7 +69,6 @@ void loop() {
 
     //-------------------------ALARM_ON-------------------------------
     case ALARM_STATE::ALARM_ON: {
-      Serial.println("STATE --> ALARM ON");
       beep();
       if( button_status() == true) { 
         alarm_state = ALARM_STATE::ALARM_OFF; }
@@ -80,19 +76,19 @@ void loop() {
       
     //-------------------------ALARM_OFF---------------------------
     case ALARM_STATE::ALARM_OFF: {
-      Serial.println("STATE --> ALARM OFF");
       silence(); 
       alarm_state = ALARM_STATE::DEFAULT_STATE;
       break; } 
 
+    //-------------------------ALARM_OFF---------------------------
     default: 
-      Serial.print("Something is wrong ---> switch case is default... "); 
+      alarm_state = ALARM_STATE::DEFAULT_STATE; // Reset to default state to avoid instability
+
   }
   
-
   //------------------------------------------TEST-CODE---------------------------------------------------
   
-  // this code is for testing the board when i repin to make sure that the modules work
+  // this code is for testing the board when i repin to make sure that the modules/boards work
   //lcd_test();
   // if (button_status() == true) {
   //   led_status(1); } // turn on LED
@@ -102,28 +98,34 @@ void loop() {
 
 }
 
+//---------------------------------------------------------------------EXTRA-FUNCTIONS----------------------------------------------------------------------------------------------
 
+// function to handle and print initial state and state changes for the finite state machine
+void check_and_print_current_state(ALARM_STATE &current_state, ALARM_STATE &previous_state, bool &first_state) {
+  if (first_state) {                      // ^& here we pass the variables by reference so that new copies of current
+    print_state(current_state);           //    or previous states and first states variables arent made. this is because 
+    first_state = false; }                //    the purpose of these variables are to track changes - so by copying them 
+                                          //    the changes will not reflect outsie this function.
+  if (current_state != previous_state) {
+    print_state(current_state); 
+    previous_state = current_state; }
+}
 
+// this prints the current state 
+void print_state(ALARM_STATE state) { //  <---  no need to use & as this is a "read-only" state
+  switch (state) {                    //        plus, enum is lightweight so copying it has little damage to performance              
+    case ALARM_STATE::DEFAULT_STATE:
+      Serial.println("STATE --> DEFAULT");
+      break;
+    case ALARM_STATE::ALARM_ON:
+      Serial.println("STATE --> ALARM ON");
+      break;
+    case ALARM_STATE::ALARM_OFF:
+      Serial.println("STATE --> ALARM OFF");
+      break;
+    default:
+      Serial.print("Error: Unknown state encountered in ALARM_STATE! State ID: ");
+      Serial.println(static_cast<uint8_t>(alarm_state));  // Log the numeric value of the invalid state
+      break;}
+}
 
-
-
-
-
-
-
-
-// // if the alarm is fired... (maybe experiment with do while, or while loops?) (make a function for if SQW == high to abstract this)
-// if ( digitalRead (CLOCK_INTERRUPT_PIN) == HIGH ) { 
-//   beep(); // sound the alarm
-
-//   // once button is pressed (while alarm has been triggered)...
-//   if ( button_status() == true ) {
-//     delete_alarm(1); // delete alarm 1
-//     silence(); // shut the alarm up!!
-
-//     // immediately below, if you want the alarm to repeat...
-//     //  ...copy the alarm/timer function from setup above.
-//     //set_daily_alarm(11, 30);
-
-//   }
-// }
