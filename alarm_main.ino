@@ -1,16 +1,16 @@
 // main ino file for the setup and loop functions 
 // here the main actions of the actual alarm system will be initiated 
 // whereas the specific functions using module libraries will be in other header file
+// PIN CONFIGURATION IS IN pinout.h
 
 #include "RTC_and_LCD.h"
 #include "buzzer.h"
 #include "functions.h"
 
-// button pin is 2
-// buzzer pin is 3
-// lcd pins are 5-10
-
-enum class ALARM_STATE : uint8_t { // FINITE STATE MACHINE STATES
+//---------------------------------FINITE-STATE-MACHINE-ENUM---------------------------------------
+// this enum is for the states which the alarm will have
+// a state will be added to check for the voice commands too soon 
+enum class ALARM_STATE : uint8_t { 
   DEFAULT_STATE,  // input alarm    --> inputting alarm fired     ---> state = ALARM_OFF
   ALARM_ON,       // beeps buzzer   --> inputting button pressed  ---> state = ALARM_ON
   ALARM_OFF,      // silence buzzer --> deletes alarm             ---> state = DEFAULT
