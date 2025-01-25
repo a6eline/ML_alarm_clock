@@ -62,8 +62,8 @@ void loop() {
   switch(alarm_state) {
     //-------------------------DEFAULT-------------------------------
     case ALARM_STATE::DEFAULT_STATE: {
-      // checking if alarm is fired --> DS3231 SQW pin == HIGH
-      if ( digitalRead (CLOCK_INTERRUPT_PIN) == HIGH ) { 
+      // checking if alarm is fired --> DS3231 SQW pin == LOW
+      if ( digitalRead (CLOCK_INTERRUPT_PIN) == LOW ) { 
         alarm_state = ALARM_STATE::ALARM_ON; }
       break; } 
 
@@ -76,7 +76,16 @@ void loop() {
       
     //-------------------------ALARM_OFF---------------------------
     case ALARM_STATE::ALARM_OFF: {
+      delete_alarm(1);
       silence(); 
+      delay(500); // Allow some time for state to stabilize
+      
+      if (digitalRead(CLOCK_INTERRUPT_PIN) == HIGH) {
+        Serial.println("Alarm cleared successfully.");
+      } else {
+        Serial.println("Failed to clear alarm.");
+      }
+
       alarm_state = ALARM_STATE::DEFAULT_STATE;
       break; } 
 
@@ -85,7 +94,7 @@ void loop() {
       alarm_state = ALARM_STATE::DEFAULT_STATE; // Reset to default state to avoid instability
 
   }
-    
+
 }
 
 //---------------------------------------------------------------------EXTRA-FUNCTIONS----------------------------------------------------------------------------------------------
@@ -105,17 +114,17 @@ void check_and_print_current_state(ALARM_STATE &current_state, ALARM_STATE &prev
 void print_state(ALARM_STATE state) { //  <---  no need to use & as this is a "read-only" state
   switch (state) {                    //        plus, enum is lightweight so copying it has little damage to performance              
     case ALARM_STATE::DEFAULT_STATE:
-      Serial.println("STATE --> DEFAULT");
+      Serial.println(); Serial.println("STATE --> DEFAULT");
       break;
     case ALARM_STATE::ALARM_ON:      
-      Serial.println("STATE --> ALARM ON");
+      Serial.println(); Serial.println("STATE --> ALARM ON");
       Serial.println("Buzzer on!!!! BEEEEEEEEEEEP. . .");
       break;
     case ALARM_STATE::ALARM_OFF:
-      Serial.println("STATE --> ALARM OFF");
+      Serial.println(); Serial.println("STATE --> ALARM OFF");
       break;
     default:
-      Serial.print("Error: Unknown state encountered in ALARM_STATE! State ID: ");
+      Serial.println(); Serial.print("Error: Unknown state encountered in ALARM_STATE! State ID: ");
       // type casting the enum variable "state" to a uint8_t (number from 0-225) 
       Serial.println(static_cast<uint8_t>(state));  
       break;}
