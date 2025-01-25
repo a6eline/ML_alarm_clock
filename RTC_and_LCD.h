@@ -31,19 +31,20 @@
 //   DS3231_A2_Day = 0x8
 // };
 
-// changing Ds3231Alarm1Mode names...
+// ------------------------ ENUM ALIASING -------------------------------
+// renaming Ds3231Alarm1Mode for better readability
 constexpr auto A1_SECOND = DS3231_A1_Second;
 constexpr auto A1_MINUTE = DS3231_A1_Minute;
 constexpr auto A1_HOUR = DS3231_A1_Hour;
 
-// changing Ds3231Alarm2Mode names...
+// renaming Ds3231Alarm1Mode for better readability
 constexpr auto A2_MINUTE = DS3231_A2_Minute;
 constexpr auto A2_HOUR = DS3231_A2_Hour;
 
 
 //------------------------SETUP-------------------------------
-void checkRTC(void);
-void rtc_setup(void);
+void checkRTC(void);    // checks if the RTC is working and if power is on
+void rtc_setup(void);   // setup for RTC (pins and such)
 
 //------------------------LCD-------------------------------
 void lcd_setup(void);
