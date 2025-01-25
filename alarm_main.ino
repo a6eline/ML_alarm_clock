@@ -20,7 +20,7 @@ enum class ALARM_STATE : uint8_t {
 
 void setup() {
 
-  delay(2000); // delay is NEEDED to wait for upload. It usually take around 3-5 seconds, depending on the board.
+  delay(5000); // delay is NEEDED to wait for upload. It usually take around 3-5 seconds, depending on the board.
   //  ...if the delay board takes longer to upload/compile, then make the delay longer.
   //  ...you can tell if the Serial message below does not print.
 
@@ -125,7 +125,8 @@ void print_state(ALARM_STATE state) { //  <---  no need to use & as this is a "r
       break;
     default:
       Serial.print("Error: Unknown state encountered in ALARM_STATE! State ID: ");
-      Serial.println(static_cast<uint8_t>(alarm_state));  // Log the numeric value of the invalid state
+      // type casting the enum variable "state" to a uint8_t (number from 0-225) 
+      Serial.println(static_cast<uint8_t>(state));  
       break;}
 }
 
