@@ -40,10 +40,16 @@ void button_setup(void) {
   // attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), on_button, FALLING); 
 }
 
-// checks whether or not button has been pressed.
+// functions.cpp --- checks if button has been pressed + debounce checker of 50ms
 bool button_status(void) {
+  static unsigned long prev_btn_time = 0;   // tracks the previous press time which is initially 0 
+  const unsigned long DEBOUNCE_DELAY = 50;  // constant debounce variable
+  unsigned long current_time = millis();
+
   if(digitalRead(BUTTON_PIN) == HIGH) {
-    //Serial.println("Button Pressed!");
+    if (current_time - prev_btn_time > DEBOUNCE_DELAY) {
+      prev_btn_time = current_time;
+    }
     return true; 
   }
   else {

@@ -14,5 +14,4 @@ void silence(void) {
 
 void beep(void) {
   digitalWrite(BUZZER_PIN, HIGH);
-  Serial.print("Buzzer on!!!! BEEEEEEEEEEEP. . .");
 }

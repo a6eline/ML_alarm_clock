@@ -19,25 +19,45 @@ LiquidCrystal lcd(5, 6, 7, 8, 9, 10); //Pins: RS, E, D4, D5, D6, D7
 RTC_DS3231 rtc; 
 
 //---------------------------------------------------------------------RTC----------------------------------------------------------------------------------------------
-
 void checkRTC(void) {
-  //lcd.clear(); // clear LCD so previous screen doesnt interfere
-  if (!rtc.begin()) { // if I2C communication with RTC is unsuccessful 
-    lcd.print("I2C + RTC Error");
-    Serial.println("I2C + RTC Error...");
-    while (1); // Halt if RTC is not found
+  // try to initialize RTC 
+  if (!rtc.begin()) { // If I2C communication with RTC is unsuccessful
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("RTC Error");
+    lcd.setCursor(0, 1);
+    lcd.print("Check connections");
+    Serial.println("I2C + RTC Error... Check Connections");
+    return;  // Exit function if RTC initialization fails
   }
-  if (rtc.lostPower()) { // if RTC has lost power
+
+  // Check if RTC has lost power
+  if (rtc.lostPower()) { // If RTC has lost power
+    lcd.clear();
+    lcd.setCursor(0, 0);
     lcd.print("RTC lost power");
     Serial.println("RTC lost power...");
-    delay(2000);
-    rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); // adjust the date and time
-  }
-  else { 
+    delay(2000); // Display the error for 2 seconds
+
+    rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); // adjust RTC to current compile time
+
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("RTC Adjusted");
+    Serial.println("RTC adjusted to current compile time.");
+    delay(2000); // wait for 2 seconds before continuing
+  } else {
     Serial.println("RTC working!");
   }
-  delay(3000);
+
+  // Final confirmation on LCD
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("RTC Initialized");
+  Serial.println("RTC Initialized");
+  delay(2000); // Display confirmation for 2 seconds
 }
+
 
 // RTC_and_LCD.cpp --- set up the RTC module's pins, attatch pin interupt, disable previous alarms and more - check 
 void rtc_setup(void) {
@@ -135,18 +155,18 @@ void timer(int hour, int minute, int second, Ds3231Alarm1Mode alarm_mode) {
 // when using in main type:
 //    timer<ds3231Alarm( 1 or 2 )Mode> (hourInt, minInt, secondInt, A1_SECOND);
 //    timer<auto> (hourInt, mintInt, secondInt, A1_SECOND);
-// template <typename alarmT> 
-// void timer_template(int hour, int minute, int second, alarmT alarm_mode) {
-//   Serial.print("Alarm for "); 
-//   Serial.print(hour); Serial.print(" hr(s) and "); Serial.print(minute); Serial.print(" min(s)"); Serial.print(second); Serial.print(" sec(s)");
+template <typename alarmT> 
+void timer_template(int hour, int minute, int second, alarmT alarm_mode) {
+  Serial.print("Alarm for "); 
+  Serial.print(hour); Serial.print(" hr(s) and "); Serial.print(minute); Serial.print(" min(s)"); Serial.print(second); Serial.print(" sec(s)");
 
-//   if (!rtc.setAlarm1 (rtc.now() + TimeSpan(0, hour, minute, second), alarm_mode) ) {
-//         Serial.println(" from now was NOT set!");
-//   }
-//   else {
-//       Serial.println (" from now was SUCCESSFULLY set!");
-//   }
-// }
+  if (!rtc.setAlarm1 (rtc.now() + TimeSpan(0, hour, minute, second), alarm_mode) ) {
+        Serial.println(" from now was NOT set!");
+  }
+  else {
+      Serial.println (" from now was SUCCESSFULLY set!");
+  }
+}
 
 //---------------------------------------------------------------------ALARM----------------------------------------------------------------------------------------------
 

@@ -20,7 +20,7 @@ enum class ALARM_STATE : uint8_t {
 
 void setup() {
 
-  delay(5000); // delay is NEEDED to wait for upload. It usually take around 3-5 seconds, depending on the board.
+  delay(1000); // delay is NEEDED to wait for upload. It usually take around 3-5 seconds, depending on the board.
   //  ...if the delay board takes longer to upload/compile, then make the delay longer.
   //  ...you can tell if the Serial message below does not print.
 
@@ -80,22 +80,12 @@ void loop() {
       alarm_state = ALARM_STATE::DEFAULT_STATE;
       break; } 
 
-    //-------------------------ALARM_OFF---------------------------
+    //-------------------------DEFAULT-CASE---------------------------
     default: 
       alarm_state = ALARM_STATE::DEFAULT_STATE; // Reset to default state to avoid instability
 
   }
-  
-  //------------------------------------------TEST-CODE---------------------------------------------------
-  
-  // this code is for testing the board when i repin to make sure that the modules/boards work
-  //lcd_test();
-  // if (button_status() == true) {
-  //   led_status(1); } // turn on LED
-  // else if (button_status() == false) {
-  //   led_status(0); // turn off LED
-  // }
-
+    
 }
 
 //---------------------------------------------------------------------EXTRA-FUNCTIONS----------------------------------------------------------------------------------------------
@@ -117,8 +107,9 @@ void print_state(ALARM_STATE state) { //  <---  no need to use & as this is a "r
     case ALARM_STATE::DEFAULT_STATE:
       Serial.println("STATE --> DEFAULT");
       break;
-    case ALARM_STATE::ALARM_ON:
+    case ALARM_STATE::ALARM_ON:      
       Serial.println("STATE --> ALARM ON");
+      Serial.println("Buzzer on!!!! BEEEEEEEEEEEP. . .");
       break;
     case ALARM_STATE::ALARM_OFF:
       Serial.println("STATE --> ALARM OFF");
@@ -128,5 +119,14 @@ void print_state(ALARM_STATE state) { //  <---  no need to use & as this is a "r
       // type casting the enum variable "state" to a uint8_t (number from 0-225) 
       Serial.println(static_cast<uint8_t>(state));  
       break;}
+}
+
+// function area to test certain components
+void test_components(void) {
+  if (button_status()) {
+    led_status(1); // Turn on LED
+  } else {
+    led_status(0); // Turn off LED
+  }
 }
 
