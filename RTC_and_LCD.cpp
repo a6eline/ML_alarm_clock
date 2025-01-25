@@ -21,46 +21,32 @@ RTC_DS3231 rtc;
 //---------------------------------------------------------------------RTC----------------------------------------------------------------------------------------------
 void checkRTC(void) {
   // try to initialize RTC 
+  lcd.clear(); lcd.setCursor(0, 0);
   if (!rtc.begin()) { // If I2C communication with RTC is unsuccessful
-    lcd.clear();
-    lcd.setCursor(0, 0);
     lcd.print("RTC Error");
     lcd.setCursor(0, 1);
     lcd.print("Check connections");
     Serial.println("I2C + RTC Error... Check Connections");
-    return;  // Exit function if RTC initialization fails
-  }
+    delay(2000);
+    return; } // Exit function if RTC initialization fails
 
   // Check if RTC has lost power
   if (rtc.lostPower()) { // If RTC has lost power
-    lcd.clear();
-    lcd.setCursor(0, 0);
     lcd.print("RTC lost power");
-    Serial.println("RTC lost power...");
-    delay(2000); // Display the error for 2 seconds
-
-    rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); // adjust RTC to current compile time
-
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("RTC Adjusted");
-    Serial.println("RTC adjusted to current compile time.");
-    delay(2000); // wait for 2 seconds before continuing
-  } else {
+    Serial.println("RTC lost power..."); }
+  
+  else {
     Serial.println("RTC working!");
-  }
+    lcd.print("RTC Initialized");
+    Serial.println("RTC Initialized"); }
 
-  // Final confirmation on LCD
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("RTC Initialized");
-  Serial.println("RTC Initialized");
-  delay(2000); // Display confirmation for 2 seconds
+  delay(2000); // display message for 2 seconds
 }
 
 
 // RTC_and_LCD.cpp --- set up the RTC module's pins, attatch pin interupt, disable previous alarms and more - check 
 void rtc_setup(void) {
+  rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
   pinMode(CLOCK_INTERRUPT_PIN, INPUT_PULLUP); // Setting sqw pinmode to high  
   attachInterrupt(digitalPinToInterrupt(CLOCK_INTERRUPT_PIN), on_alarm, FALLING); // The interupt is triggered when the pin falls from high to low
   rtc.writeSqwPinMode(DS3231_OFF); // stop oscillating signals at SQW Pin otherwise setAlarm1 will fail
@@ -155,18 +141,18 @@ void timer(int hour, int minute, int second, Ds3231Alarm1Mode alarm_mode) {
 // when using in main type:
 //    timer<ds3231Alarm( 1 or 2 )Mode> (hourInt, minInt, secondInt, A1_SECOND);
 //    timer<auto> (hourInt, mintInt, secondInt, A1_SECOND);
-template <typename alarmT> 
-void timer_template(int hour, int minute, int second, alarmT alarm_mode) {
-  Serial.print("Alarm for "); 
-  Serial.print(hour); Serial.print(" hr(s) and "); Serial.print(minute); Serial.print(" min(s)"); Serial.print(second); Serial.print(" sec(s)");
+// template <typename alarmT> 
+// void timer_template(int hour, int minute, int second, alarmT alarm_mode) {
+//   Serial.print("Alarm for "); 
+//   Serial.print(hour); Serial.print(" hr(s) and "); Serial.print(minute); Serial.print(" min(s)"); Serial.print(second); Serial.print(" sec(s)");
 
-  if (!rtc.setAlarm1 (rtc.now() + TimeSpan(0, hour, minute, second), alarm_mode) ) {
-        Serial.println(" from now was NOT set!");
-  }
-  else {
-      Serial.println (" from now was SUCCESSFULLY set!");
-  }
-}
+//   if (!rtc.setAlarm1 (rtc.now() + TimeSpan(0, hour, minute, second), alarm_mode) ) {
+//         Serial.println(" from now was NOT set!");
+//   }
+//   else {
+//       Serial.println (" from now was SUCCESSFULLY set!");
+//   }
+// }
 
 //---------------------------------------------------------------------ALARM----------------------------------------------------------------------------------------------
 
@@ -177,7 +163,9 @@ void timer_template(int hour, int minute, int second, alarmT alarm_mode) {
 // RTC_and_LCD.cpp --- this function sets an alarm everyday for HOUR:MINUTE in 24hr code
 void set_daily_alarm(int hour, int minute) {
   // "Alarm for HH:MM has NOT/SUCCESSFULLY been set"
+  Serial.println();
   Serial.print("Alarm for "); Serial.print(hour); Serial.print(":"); Serial.print(minute);
+  Serial.println();
 
   if(!rtc.setAlarm1(DateTime(0, 0, 0, hour, minute, 0), DS3231_A1_Hour)) 
   {
@@ -202,21 +190,44 @@ void set_alarm(void) {
 
 // RTC_and_LCD.cpp --- deletes alarm, which is needed to clear the fired state. This alarm should be set again after triggered output state (such as buzzeer or LED) is turned off.
 void delete_alarm(int alarmNumber) {
-  // there can only be alarm 1 or 2 - other numbers can result in a bug
+  // There can only be alarm 1 or 2 - other numbers can result in a bug
   if (alarmNumber == 1 || alarmNumber == 2) {
-    // resetting SQW and alarm 1 flag
-    // using setAlarm1, the next alarm could now be configurated
-    // parameter int n so that user can chose to reset alarm 1 or 2
-    if (digitalRead (CLOCK_INTERRUPT_PIN) == HIGH) {
-        rtc.disableAlarm(alarmNumber);
-        rtc.clearAlarm(alarmNumber); 
-        Serial.println("    - Alarm cleared");
-    }
+    rtc.disableAlarm(alarmNumber);    // disable the specified alarm
+    rtc.clearAlarm(alarmNumber);      // clear the specified alarm
+
+        // digitalWrite(CLOCK_INTERRUPT_PIN, LOW);  // Set the interrupt pin LOW
+        delay(200);
+
+    rtc.writeSqwPinMode(DS3231_OFF);  // disable square wave output
+    rtc.clearAlarm(alarmNumber);      // clear lingering flags
+    Serial.print("Interrupt pin state after clearing alarm: ");
+    Serial.println(digitalRead(CLOCK_INTERRUPT_PIN));
   }
   else {
     Serial.println("Wrong parameter inputted for delete_alarm function in RTC_and_LCD.cpp");
   }
 }
+
+// void delete_alarm(int alarmNumber) {
+//   if (alarmNumber == 1) {
+//     rtc.clearAlarm(1); // Clear Alarm 1 flag
+//     rtc.disableAlarm(1); // Disable Alarm 1
+//     Serial.println("Alarm 1 cleared and disabled.");
+//   } else if (alarmNumber == 2) {
+//     rtc.clearAlarm(2); // Clear Alarm 2 flag
+//     rtc.disableAlarm(2); // Disable Alarm 2
+//     Serial.println("Alarm 2 cleared and disabled.");
+//   } else {
+//     Serial.println("Invalid alarm number! Use 1 or 2.");
+//   }
+  
+//   // Ensure all alarms and interrupt flags are cleared
+//   rtc.writeSqwPinMode(DS3231_OFF); // Disable square wave output
+//   rtc.clearAlarm(1); // Clear any lingering Alarm 1 flags
+//   rtc.clearAlarm(2); // Clear any lingering Alarm 2 flags
+//   Serial.println("All alarms cleared.");
+// }
+
 
 //-------------------------------------------------------------------MISC------------------------------------------------------------------------------------------------
 
