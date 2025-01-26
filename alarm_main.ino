@@ -1,46 +1,49 @@
-// main ino file for the setup and loop functions 
-// here the main actions of the actual alarm system will be initiated 
-// whereas the specific functions using module libraries will be in other header file
-// PIN CONFIGURATION IS IN pinout.h
+
+//---------------------------------------------------------------alarm_main.ino------------------------------------------------------------------------------------------------
+
+/* 
+  // main ino file for the setup and loop functions 
+  // here the main actions of the actual alarm system will be initiated 
+  // whereas the specific functions using module libraries will be in other header file
+  // PIN CONFIGURATION IS IN pinout.h 
+*/
+
+/* 
+IMPORTANT NOTES:
+
+*/
 
 #include "RTC_and_LCD.h"
-#include "buzzer.h"
 #include "functions.h"
+#include "esp_connection.h"
 
 //---------------------------------FINITE-STATE-MACHINE-ENUM---------------------------------------
 // this enum is for the states which the alarm will have
-// a state will be added to check for the voice commands too soon 
 enum class ALARM_STATE : uint8_t { 
   DEFAULT_STATE,  // input alarm    --> inputting alarm fired     ---> state = ALARM_OFF
   ALARM_ON,       // beeps buzzer   --> inputting button pressed  ---> state = ALARM_ON
   ALARM_OFF,      // silence buzzer --> deletes alarm             ---> state = DEFAULT
-}; 
+}; // ^^^ A STATE TO CHECK VOICE COMMANDS WILL BE ADDED SOON 
+
 
 //---------------------------------------------------------------------SETUP----------------------------------------------------------------------------------------------
 
 void setup() {
 
-  delay(1000); // delay is NEEDED to wait for upload. It usually take around 3-5 seconds, depending on the board.
-  //  ...if the delay board takes longer to upload/compile, then make the delay longer.
-  //  ...you can tell if the Serial message below does not print.
+  delay(1000); // delay to allow certain boards to upload safely
 
   //------------------------------------------SETUP-FUNCTIONS---------------------------------------
   lcd_setup(); // setup the LCD
   checkRTC(); rtc_setup(); // check that the rtc is working 
   display_time();
   serial_setup(); led_setup(); buzzer_setup(); button_setup();// extra modules/component setups // 
-  Serial.println("Serial Test for Alarm Clock"); 
   
   //------------------------------------------TIMER-------------------------------------------------
-
-  // //timer_second(3);
-  timer(0, 0, 3, A1_HOUR); // timer for 3 seconds timer(int hour, int minute, int second);
-  count_second(3); // to test if you have a timer for n seconds, prints seconds in Serial Monitor
+  //timer(0, 0, 3, A1_HOUR); // timer for 3 seconds timer(int hour, int minute, int second);
+  //count_second(3); // to test if you have a timer for n seconds, prints seconds in Serial Monitor
 
   //------------------------------------------ALARM-------------------------------------------------
-
-  // set_alarm(); // timer for every minute
-  // set_daily_alarm(7, 15); // everyday alarm at HH:MM   
+  set_daily_alarm(13, 30); // everyday alarm at HH:MM   
 }
 
 
@@ -59,7 +62,8 @@ void loop() {
   // function to check and print the state changes
   check_and_print_current_state(alarm_state, previous_state, first_state);
 
-  switch(alarm_state) {
+  switch(alarm_state) 
+  {
     //-------------------------DEFAULT-------------------------------
     case ALARM_STATE::DEFAULT_STATE: {
       // checking if alarm is fired --> DS3231 SQW pin == LOW
@@ -79,22 +83,13 @@ void loop() {
       delete_alarm(1);
       silence(); 
       delay(500); // Allow some time for state to stabilize
-      
-      if (digitalRead(CLOCK_INTERRUPT_PIN) == HIGH) {
-        Serial.println("Alarm cleared successfully.");
-      } else {
-        Serial.println("Failed to clear alarm.");
-      }
-
       alarm_state = ALARM_STATE::DEFAULT_STATE;
       break; } 
 
     //-------------------------DEFAULT-CASE---------------------------
     default: 
       alarm_state = ALARM_STATE::DEFAULT_STATE; // Reset to default state to avoid instability
-
   }
-
 }
 
 //---------------------------------------------------------------------EXTRA-FUNCTIONS----------------------------------------------------------------------------------------------
@@ -118,24 +113,24 @@ void print_state(ALARM_STATE state) { //  <---  no need to use & as this is a "r
       break;
     case ALARM_STATE::ALARM_ON:      
       Serial.println(); Serial.println("STATE --> ALARM ON");
-      Serial.println("Buzzer on!!!! BEEEEEEEEEEEP. . .");
+      Serial.println("    Buzzer on, beep. . .");
       break;
     case ALARM_STATE::ALARM_OFF:
       Serial.println(); Serial.println("STATE --> ALARM OFF");
+      Serial.println("    Buzzer disabled, silence. . .");
       break;
     default:
-      Serial.println(); Serial.print("Error: Unknown state encountered in ALARM_STATE! State ID: ");
+      Serial.println(); Serial.print("ERROR: Unknown state encountered in ALARM_STATE! State ID: ");
       // type casting the enum variable "state" to a uint8_t (number from 0-225) 
       Serial.println(static_cast<uint8_t>(state));  
       break;}
 }
 
-// function area to test certain components
+// function to test modules work after new pinouts
 void test_components(void) {
   if (button_status()) {
-    led_status(1); // Turn on LED
-  } else {
-    led_status(0); // Turn off LED
-  }
+    led_status(1); } // Turn on LED
+  else {
+    led_status(0); } // Turn off LED
 }
 
