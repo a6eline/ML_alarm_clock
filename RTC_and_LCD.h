@@ -1,3 +1,6 @@
+
+//----------------------------------------------------------------RTC-and-LCD.h------------------------------------------------------------------------------------------------
+
 #ifndef RTC_AND_LCD_H
 #define RTC_AND_LCD_H
 
@@ -8,63 +11,52 @@
 
 #define CLOCK_INTERRUPT_PIN 4
 
-// Renaming Alarm mode enums as it was too lengthy
-// Ds3231Alarm1Mode is an enum which is defined in RTClib.h line 55 
-//  ^https://github.com/adafruit/RTClib/blob/master/src/RTClib.h#L378
+// ------------------------ ENUM-ALIASING -------------------------------
 
-// ORIGINAL DS3231 Alarm modes for alarm 1 and 2 . . .
-
-// enum Ds3231Alarm1Mode {
-//   DS3231_A1_PerSecond = 0x0F,
-//   DS3231_A1_Second = 0x0E,
-//   DS3231_A1_Minute = 0x0C,
-//   DS3231_A1_Hour = 0x08,
-//   DS3231_A1_Date = 0x00,
-//   DS3231_A1_Day = 0x10
-// };
-
-// enum Ds3231Alarm2Mode {
-//   DS3231_A2_PerMinute = 0x7,
-//   DS3231_A2_Minute = 0x6,
-//   DS3231_A2_Hour = 0x4,
-//   DS3231_A2_Date = 0x0,
-//   DS3231_A2_Day = 0x8
-// };
-
-// ------------------------ ENUM ALIASING -------------------------------
-// renaming Ds3231Alarm1Mode for better readability
-constexpr auto A1_SECOND = DS3231_A1_Second;
-constexpr auto A1_MINUTE = DS3231_A1_Minute;
-constexpr auto A1_HOUR = DS3231_A1_Hour;
+// Ds3231Alarm1Mode & Ds3231Alarm2Mode is defined in RTClib.h line 55-76
+//  ^ https://github.com/adafruit/RTClib/blob/master/src/RTClib.h#L378
 
 // renaming Ds3231Alarm1Mode for better readability
-constexpr auto A2_MINUTE = DS3231_A2_Minute;
-constexpr auto A2_HOUR = DS3231_A2_Hour;
+constexpr auto A1_SECOND  =   DS3231_A1_Second;
+constexpr auto A1_MINUTE  =   DS3231_A1_Minute;
+constexpr auto A1_HOUR    =   DS3231_A1_Hour;
 
+// renaming Ds3231Alarm1Mode for better readability
+constexpr auto A2_MINUTE  =   DS3231_A2_Minute;
+constexpr auto A2_HOUR    =   DS3231_A2_Hour;
 
 //------------------------SETUP-------------------------------
-void checkRTC(void);    // checks if the RTC is working and if power is on
-void rtc_setup(void);   // setup for RTC (pins and such)
+
+void checkRTC(void);      // checks if the RTC is working and if power is on
+void rtc_setup(void);     // setup for RTC (pins and such)
 
 //------------------------LCD-------------------------------
-void lcd_setup(void);
-void lcd_test(void);
-void display_time(void);
+
+void lcd_setup(void);     // set up the LCD screen
+void lcd_test(void);      // test LCD when pinning new board
+void display_time(void);  // display the time on LCD --> may change the setup soon since its a bit ugly
 
 //------------------------TIMER-------------------------------
+
 void timer(int hour, int minute, int second, Ds3231Alarm1Mode alarm_mode);
 // template <typename alarmT> 
 //   void timer_template(int hour, int minute, int second, alarmT alarm_mode);
 
 //------------------------ALARM-------------------------------
-void set_alarm(void);
-void set_daily_alarm(int hour, int minute);
+
+void set_alarm(void);     // sets a hardcoded alarm for debug 
+void set_daily_alarm(int hour, int minute); // sets a daily alarm (24HR parameters)
 
 //------------------------RESET-------------------------------
-void delete_alarm(int alarmNumber);
+
+void delete_alarm(int alarmNumber); // deletes the alarm for it to be reset
+
+//------------------------FIRED-------------------------------
+
+bool alarm_fired(void);   // checks if alarm has been fired or not --> will be used soon 
 
 //------------------------MISC-------------------------------
-void on_alarm();
+void on_alarm();          // serial.print when alarm occures, used in --> rtc_setup attatchInterupt() function
 
 #endif
 
