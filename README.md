@@ -5,10 +5,7 @@ An alarm clock which has to be turned off remotely else where using esp_now one 
 - Arduino NANO ESP32 Board
 - LCD1602 + Potentiometer
 - DS3231 RTC Module
-- Mic Module 
-- Passive Buzzer 
-- Button
-- Breadboard + Jumpwires (ofc)
+- Mic Module + Passive Buzzer + Button
 
 ## Libraries Used
 * RTC_and_LCD.cpp/h
@@ -18,4 +15,5 @@ An alarm clock which has to be turned off remotely else where using esp_now one 
 * esp_connection.cpp/h
   - esp_now.h
   - WiFi.h
-     
+
+## Pinout 
