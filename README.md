@@ -8,11 +8,11 @@ An alarm clock which has to be turned off remotely else where using esp_now one 
 - Mic Module + Passive Buzzer + Button
 
 ## Libraries Used
-* RTC_and_LCD.cpp/h
+### RTC_and_LCD.cpp/h
   - RTC_lib.h
   - Wire.h
   - LiquidCrystal.h
-* esp_connection.cpp/h
+### esp_connection.cpp/h
   - esp_now.h
   - WiFi.h
 
