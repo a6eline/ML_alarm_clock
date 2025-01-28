@@ -5,6 +5,7 @@ Status: Ongoing
 > ML Voice Recognition Model is made by @abbie_bola
 
 ## Photos & Pinout
+<img align="centre" src="https://github.com/user-attachments/assets/6ddc1d16-701f-4b6f-b7a4-b18933028ffa"/> 
 ![alarm_clock_pinout](https://github.com/user-attachments/assets/84e0cc8f-e5a3-41ba-81e9-2eeefc2f4cef)
 ![button_pinout](https://github.com/user-attachments/assets/b55ec6d9-76c8-48b1-8c9a-9a881498567f)
 
