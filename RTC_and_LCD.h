@@ -1,8 +1,7 @@
 
 //----------------------------------------------------------------RTC-and-LCD.h------------------------------------------------------------------------------------------------
 
-#ifndef RTC_AND_LCD_H
-#define RTC_AND_LCD_H
+#pragma once
 
 #include <Arduino.h>
 #include <RTClib.h>
@@ -57,9 +56,6 @@ bool alarm_fired(void);   // checks if alarm has been fired or not --> will be u
 
 //------------------------MISC-------------------------------
 void on_alarm();          // serial.print when alarm occures, used in --> rtc_setup attatchInterupt() function
-
-#endif
-
 
 // // header for renaming 
 
