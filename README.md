@@ -21,7 +21,7 @@ The photos of the pinout uses an Arduino nano board instead of an Arduino nano E
 ## Libraries Used
   - [RTC_lib.h](https://github.com/adafruit/RTClib) - for the DS3231
   - [Wire.h](https://github.com/arduino/ArduinoCore-avr/blob/master/libraries/Wire/src/Wire.cpp) - for I2C communication 
-  - [LiquidCrystal.h] (https://github.com/arduino-libraries/LiquidCrystal) - for the LCD1602
-  - [esp_now.h] (https://github.com/espressif/esp-idf/blob/master/components/esp_wifi/include/esp_now.h) - for wireless ESP communication
-  - [WiFi.h] () - for WiFi communication
+  - [LiquidCrystal.h](https://github.com/arduino-libraries/LiquidCrystal) - for the LCD1602
+  - [esp_now.h](https://github.com/espressif/esp-idf/blob/master/components/esp_wifi/include/esp_now.h) - for wireless ESP communication
+  - [WiFi.h](https://github.com/espressif/arduino-esp32/blob/master/libraries/WiFi/src/WiFi.cpp) - for WiFi communication
 
