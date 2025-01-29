@@ -11,10 +11,10 @@ The photos of the pinout uses an Arduino nano board instead of an Arduino nano E
 ![button_pinout](https://github.com/user-attachments/assets/b55ec6d9-76c8-48b1-8c9a-9a881498567f)
 
 ## Materials Used
-- Arduino NANO ESP32 Board
+- [Arduino NANO ESP32 Board](https://docs.arduino.cc/hardware/nano-esp32/)
 - LCD1602 + Potentiometer
-- DS3231 RTC Module
-- Mic Module + Passive Buzzer + Button
+- [DS3231 RTC Module](https://www.amazon.co.uk/AZDelivery-RTC-Battery-included-Raspberry/dp/B01M2B7HQB/ref=sxin_15_pa_sp_search_thematic_sspa?cv_ct_cx=ds3231%2Breal%2Btime%2Bclock%2Bmodule&sbo=RZvfv%2F%2FHxDF%2BO5021pAnSA%3D%3D&sr=1-2-ad3222ed-9545-4dc8-8dd8-6b2cb5278509-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM)
+- INMP441 Mic Module + Passive Buzzer + Button
 
 ## [Project Documentations & Log](https://docs.google.com/document/d/1WiQw86Ue8yddEHVPHRZVkMrpHQOxgGgfX3WtC2Yl9dU/edit?usp=sharing)
 
