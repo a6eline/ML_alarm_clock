@@ -1,8 +1,8 @@
 
 //----------------------------------------------------------------functions.h------------------------------------------------------------------------------------------------
 
-#ifndef FUNCTIONS_H
-#define FUNCTIONS_H
+#pragma once
+
 #include <Arduino.h>
 
 #define LED_PIN 1 // for when you have an LED
@@ -33,5 +33,3 @@ void on_button();         // button pressed serial print message
 //------------------------MISC------------------------------
 
 void count_second(int n); // counts seconds to debug timers accuracy
-
-#endif
