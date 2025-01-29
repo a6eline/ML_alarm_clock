@@ -1,21 +1,46 @@
 
 //---------------------------------------------------------------alarm_main.ino------------------------------------------------------------------------------------------------
 
-/* 
-  // main ino file for the setup and loop functions 
-  // here the main actions of the actual alarm system will be initiated 
-  // whereas the specific functions using module libraries will be in other header file
-  // PIN CONFIGURATION IS IN pinout.h 
-*/
+  //-------------------------FILE-INFO-------------------------------
+  
+    // main ino file for the setup and loop functions 
+    // here the main actions of the actual alarm system will be initiated 
+    // whereas the specific functions using module libraries will be in other header files
+    // RTC_and_LCD --> for the rtc/lcd functions
+    // esp_conbnection --> for esp connections
+    // functions --> for additional
 
-/* 
-IMPORTANT NOTES:
+  //-------------------------OPERATIONS-------------------------------
 
-*/
+    // ENUM CLASS: setup finite state machine  
+
+    // ------------------SETUP-----------------
+    // SETUP: sets up the rtc, lcd, buzzer, button. 
+    // Setup: also sets an alarm/timer for tests
+
+    // ------------------LOOP------------------
+    // updates time every second
+    // sets a static state and defaults to idle
+    // does the main FSM system
+    //    ^ waits for an alarm fired
+    //    ^ beeps when alarm is fired
+    //    ^ stops when button is pressed
+
+    // -----------------FUNCTIONS---------------
+    // check_and_print_current_state --> checks state change and prints...
+    // print_state --> prints state information in serial
+
+  //------------------------IMPORTANT-INFO----------------------------
+
+    // static keyword means it will only be declared once - this is to avoid making it global
+    // a state for checking voice recognition will be added in soon 
+    // 
 
 #include "RTC_and_LCD.h"
-#include "functions.h"
 #include "esp_connection.h"
+#include "functions.h"
+
+//void serial_setup(void);  // serial monitor begin setup
 
 //---------------------------------FINITE-STATE-MACHINE-ENUM---------------------------------------
 // this enum is for the states which the alarm will have
@@ -36,14 +61,15 @@ void setup() {
   lcd_setup(); // setup the LCD
   checkRTC(); rtc_setup(); // check that the rtc is working 
   display_time();
-  serial_setup(); led_setup(); buzzer_setup(); button_setup();// extra modules/component setups // 
+  serial_setup(); 
+  led_setup(); buzzer_setup(); button_setup();// extra modules/component setups 
   
   //------------------------------------------TIMER-------------------------------------------------
   //timer(0, 0, 3, A1_HOUR); // timer for 3 seconds timer(int hour, int minute, int second);
   //count_second(3); // to test if you have a timer for n seconds, prints seconds in Serial Monitor
 
   //------------------------------------------ALARM-------------------------------------------------
-  set_daily_alarm(13, 30); // everyday alarm at HH:MM   
+  set_daily_alarm(13, 0); // everyday alarm at HH:MM   
 }
 
 
@@ -96,10 +122,10 @@ void loop() {
 
 // function to handle and print initial state and state changes for the finite state machine
 void check_and_print_current_state(ALARM_STATE &current_state, ALARM_STATE &previous_state, bool &first_state) {
-  if (first_state) {                      // ^& here we pass the variables by reference so that new copies of current
-    print_state(current_state);           //    or previous states and first states variables arent made. this is because 
-    first_state = false; }                //    the purpose of these variables are to track changes - so by copying them 
-                                          //    the changes will not reflect outsie this function.
+  if (first_state) {                      // ^& pass the variables by reference so that new copies of variable arent made
+    print_state(current_state);           //    ^ the purpose of these variables are to track changes 
+    first_state = false; }                //    ^ so by copying them the changes will not reflect outsie this function.
+
   if (current_state != previous_state) {
     print_state(current_state); 
     previous_state = current_state; }
@@ -111,14 +137,17 @@ void print_state(ALARM_STATE state) { //  <---  no need to use & as this is a "r
     case ALARM_STATE::DEFAULT_STATE:
       Serial.println(); Serial.println("STATE --> DEFAULT");
       break;
+
     case ALARM_STATE::ALARM_ON:      
       Serial.println(); Serial.println("STATE --> ALARM ON");
       Serial.println("    Buzzer on, beep. . .");
       break;
+
     case ALARM_STATE::ALARM_OFF:
       Serial.println(); Serial.println("STATE --> ALARM OFF");
       Serial.println("    Buzzer disabled, silence. . .");
       break;
+
     default:
       Serial.println(); Serial.print("ERROR: Unknown state encountered in ALARM_STATE! State ID: ");
       // type casting the enum variable "state" to a uint8_t (number from 0-225) 
