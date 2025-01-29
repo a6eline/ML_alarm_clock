@@ -1,4 +1,4 @@
-# Nano ESP32 (Remote) Alarm Clock 
+# Nano ESP32 (Remote) Alarm Clock with ML Voice Recognition
 An alarm clock which has to be turned off remotely elsewhere using esp_now one way communication to split system into 2 devices. The purpose of this is to ensure that users get out of bed to turn it off instead of snoozing and going back to bed. 
 Status: Ongoing 
 > ML Voice Recognition Model is made by @abbie_bola
