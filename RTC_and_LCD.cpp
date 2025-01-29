@@ -22,11 +22,11 @@
 
     // rtc.adjust(DateTime(F(DATE), F(TIME))) should only be used once
     // RTC module is meant to be independent --> constant resets defeats the purpose
-    //    ^ similar to resetting an anolog clock everytime you look at it
+    //    ^ similar to resetting an analog clock everytime you look at it
 
     // ONLY IF SOMETHING SEEMS WRONG: 
     // uncomment the adjustment function back in the code only when there seems to be something wrong
-    // the function is already initialised in the checkRTC function uder the rtc.lostPower() condition 
+    // the function is already initialised in the checkRTC function uner the rtc.lostPower() condition 
 
     // info about DS3231 modes are in RTC_and_LCD.h
 
