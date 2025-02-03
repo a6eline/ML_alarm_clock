@@ -69,7 +69,7 @@ void setup() {
   //count_second(3); // to test if you have a timer for n seconds, prints seconds in Serial Monitor
 
   //------------------------------------------ALARM-------------------------------------------------
-  set_daily_alarm(13, 0); // everyday alarm at HH:MM   
+  set_daily_alarm(11, 0); // everyday alarm at HH:MM   
 }
 
 
