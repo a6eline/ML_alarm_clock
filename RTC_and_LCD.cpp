@@ -35,7 +35,7 @@
 
 // Creating objects of the LCD and RTC 
 static LiquidCrystal lcd(5, 6, 7, 8, 9, 10); //Pins: RS, E, D4, D5, D6, D7
-static RTC_DS3231 rtc; 
+RTC_DS3231 rtc; 
 
 //---------------------------------------------------------------------RTC----------------------------------------------------------------------------------------------
 
@@ -73,9 +73,7 @@ void checkRTC() {
     lcd.print("RTC lost power");
     Serial.println("RTC lost power..."); 
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); 
-  }
-  
-  //-------------------------INITIALISED!-------------------------------
+  } //-------------------------INITIALISED!-------------------------------
   else {
     lcd.print("RTC Initialized");
     Serial.println("RTC Initialized"); 
@@ -88,7 +86,7 @@ void checkRTC() {
 // RTC_and_LCD.cpp --- set up the RTC module's pins, attatch pin interupt, disable previous alarms and more - check 
 void rtc_setup() {
 
-  // ONLY SET TIME ONCE 
+  // ONLY SET TIME ONCE WHEN INITIATED 
   // rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); 
 
   pinMode(CLOCK_INTERRUPT_PIN, INPUT_PULLUP);                                     // Setting sqw pinmode to high --> LOW == alarm is fired 
@@ -134,29 +132,24 @@ void display_time() {
   if (millis() - display_millis > one_sec) {
     const auto now = rtc.now();                     // update the now time
     lcd.clear();                                  // Clear the LCD screen
-
-    //-------------------------DISPLAY-WEEKDAY-------------------------------
+    //-------------------------DISPLAY-WEEKDAY----------------------------
     lcd.setCursor(0, 0);                          // set cursor to column 0, row 0
     lcd.print(dayNames[now.dayOfTheWeek()]);      // day of the week
     lcd.print(' ');                               
-
     //-------------------------DISPLAY-12HR-------------------------------
     auto hour = now.hour() % 12;
     if (hour == 0) hour = 12;                     // adjust for 12-hour format
     if (hour < 10) lcd.print('0');                // add leading zero for hour if necessary
     lcd.print(hour, DEC); 
     lcd.print(':');         
-
     //-------------------------DISPLAY-MINUTE-------------------------------
     if (now.minute() < 10) lcd.print('0');        // add leading zero for minute if necessary
     lcd.print(now.minute(), DEC);                 // print the current minute
     lcd.print(':');
-
     //-------------------------DISPLAY-SECOND-------------------------------
     if (now.second() < 10) lcd.print('0');        // add leading zero for second if necessary
     lcd.print(now.second(), DEC);                 // print the current second
     lcd.print(now.hour() < 12 ? " AM" : " PM");   // display AM/PM
-
     //-------------------------DISPLAY-DAY-------------------------------
     lcd.setCursor(0, 1);                          // set cursor to column 0, row 1
     if (now.day() < 10) lcd.print('0');           // add leading zero for day if necessary
@@ -167,7 +160,6 @@ void display_time() {
     lcd.print(now.month(), DEC);                  // print the current month
     lcd.print('.'); 
     lcd.print(now.year(), DEC);                   // print the current year
-    
     //-------------------------UPDATE-MILLIS-------------------------------
     display_millis = millis();
   }
@@ -175,7 +167,7 @@ void display_time() {
 
 //---------------------------------------------------------------------TIMER----------------------------------------------------------------------------------------------
 
-// RTC_and_LCD.cpp --- this is a timer which can go from seconds to hours 
+// RTC_and_LCD.cpp --- this is a hardcoded timer with any mode you want (template timer in RTC_and_LCD.h)
 void timer(int hour, int minute, int second, Ds3231Alarm1Mode alarm_mode) {
   Serial.println(); Serial.print("TIMER --> "); 
   Serial.print(hour); Serial.print(" hr(s) and "); 
@@ -189,28 +181,7 @@ void timer(int hour, int minute, int second, Ds3231Alarm1Mode alarm_mode) {
   }
 }
 
-// templated timer function so both Ds3231Alarm1Mode and Ds3231Alarm2Mode can be used:
-// when using in main type:
-//    timer<ds3231Alarm( 1 or 2 )Mode> (hourInt, minInt, secondInt, A1_SECOND);
-//    timer<auto> (hourInt, mintInt, secondInt, A1_SECOND);
-// template <typename alarmT> 
-// void timer_template(int hour, int minute, int second, alarmT alarm_mode) {
-//   Serial.print("Alarm for "); 
-//   Serial.print(hour); Serial.print(" hr(s) and "); Serial.print(minute); Serial.print(" min(s)"); Serial.print(second); Serial.print(" sec(s)");
-
-//   if (!rtc.setAlarm1 (rtc.now() + TimeSpan(0, hour, minute, second), alarm_mode) ) {
-//         Serial.println(" from now was NOT set!");
-//   }
-//   else {
-//       Serial.println (" from now was SUCCESSFULLY set!");
-//   }
-// }
-
 //---------------------------------------------------------------------ALARM----------------------------------------------------------------------------------------------
-
-// this is an alarm that is set daily at HOUR:MINUTE time perday, set through 24 hr
-// TODO - make this 12 hour? with AM and PM to distinguish?
-// void set_daily_alarm(int hour, int minute, char meridiem[2]) // meridiem is a 
 
 // RTC_and_LCD.cpp --- this function sets an alarm everyday for HOUR:MINUTE in 24hr code
 void set_daily_alarm(const AlarmTime& time) {
@@ -222,31 +193,28 @@ void set_daily_alarm(const AlarmTime& time) {
 
   if(rtc.setAlarm1(DateTime(0, 0, 0, hour, minute, second), AlarmMode::A1_HOUR)) {
     Serial.println(" has SUCCESSFULLY been set!");
-  }
-  else {
+  } else {
     Serial.println(" has NOT been set! (ERROR)");
   }
 }
 
 // RTC_and_LCD.cpp --- this sets a hardcoded alarm for debugging 
 void set_alarm() {
-    if(!rtc.setAlarm1(DateTime(0, 0, 0, 0, 0, 0), AlarmMode::A1_SECOND)) {
-        Serial.println("Error, alarm for every minute wasn't set!");
-    }
-    else {
-        Serial.println("Alarm is set for every minute!");
-    }
+  if(!rtc.setAlarm1(DateTime(0, 0, 0, 0, 0, 0), AlarmMode::A1_SECOND)) {
+      Serial.println("Error, alarm for every minute wasn't set!");
+  } else {
+      Serial.println("Alarm is set for every minute!");
+  }
 }
 
 //------------------------------------------------------------------DELETE-ALARM-------------------------------------------------------------------------------------------------
 
 void delete_alarm(Alarm alarm) { 
-
   // initiating array indexes, 
   constexpr int alarm_numbers[] = {
     [(int) Alarm::A1] = 1, 
     [(int) Alarm::A2] = 2
-  };
+  }; // can also use a switch case for this 
 
   const auto alarm_num = alarm_numbers[(int)alarm]; 
 
@@ -273,15 +241,8 @@ void delete_alarm(Alarm alarm) {
 //------------------------------------------------------------------ALARM-FIRED-BOOL-------------------------------------------------------------------------------------------------
 
 // RTC_and_LCD.cpp --- bool to check whether alarm is fired
-bool alarm_off() {
-  if (digitalRead( CLOCK_INTERRUPT_PIN) == LOW ) {
-    return 1; }
-  else {
-    return 0; }
-}
-
 bool alarm_fired() {
-  // returns true if the SQW pin is fired --> LOW=LOW --> true
+  // returns true if the SQW pin is fired --> LOW=LOW --> true (because INPUT_PULLUP)
   return (digitalRead(CLOCK_INTERRUPT_PIN) == LOW);
 }
 
