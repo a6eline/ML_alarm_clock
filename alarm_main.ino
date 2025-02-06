@@ -21,9 +21,6 @@
     // updates time every second
     // sets a static state and defaults to idle
     // does the main FSM system
-    //    ^ waits for an alarm fired
-    //    ^ beeps when alarm is fired
-    //    ^ stops when button is pressed
 
     // -----------------FUNCTIONS---------------
     // check_and_print_current_state --> checks state change and prints...
@@ -32,6 +29,8 @@
   //------------------------IMPORTANT-INFO----------------------------
 
     // a state for checking voice recognition will be added in soon
+  // default state is so that the device only checks for the SQW pin being high WHEN the alarm is off
+  // so that there arent multiple alarms going off at once which can affect the system turning off the buzzer
 
 #include "RTC_and_LCD.h"
 #include "esp_connection.h"
@@ -44,10 +43,7 @@ enum class AlarmState : uint8_t {
   Default,       // input alarm    --> inputting alarm fired     ---> state = AlarmOff
   AlarmOn,       // beeps buzzer   --> inputting button pressed  ---> state = AlarmOn
   AlarmOff       // silence buzzer --> deletes alarm             ---> state = DEFAULT
-}; // ^^^ A STATE TO CHECK VOICE COMMANDS WILL BE ADDED SOON
-
-// NOTE (remove before merging): Is a default state even required? What other state is there besides the alarm being on/off? Try drawing out the FSA
-
+}; 
 
 //---------------------------------------------------------------------SETUP----------------------------------------------------------------------------------------------
 
@@ -55,21 +51,20 @@ void setup() {
   delay(1000); // delay to allow certain boards to upload safely
 
   //------------------------------------------SETUP-FUNCTIONS---------------------------------------
-  lcd_setup(); // setup the LCD
+  lcd_setup();   
   checkRTC();
-  rtc_setup(); // check that the rtc is working
+  rtc_setup();    
   display_time();
   serial_setup();
-  led_setup();
   buzzer_setup();
-  button_setup();// extra modules/component setups
+  button_setup(); 
 
   //------------------------------------------TIMER-------------------------------------------------
   set_timer<Alarm::A1>(AlarmDuration {0, 0, 3}, AlarmMode::A1_HOUR);
   //count_seconds(3); // to test if you have a timer for n seconds, prints seconds in Serial Monitor
 
   //------------------------------------------ALARM-------------------------------------------------
-  set_daily_alarm(AlarmTime {12, 0, 0}); // everyday alarm at HH:MM
+  // set_daily_alarm(AlarmTime {12, 0, 0}); // everyday alarm at HH:MM
 }
 
 //---------------------------------------------------------------------ALARM-LOOP----------------------------------------------------------------------------------------------
@@ -94,7 +89,6 @@ void loop() {
     //-------------------------DEFAULT-------------------------------
   case AlarmState::Default:
     // checking if alarm is fired --> DS3231 SQW pin == LOW
-    // if (alarm_fired()) { // NOTE (remove before merging): bool alarm_fired() checks if CLOCK_INTERRUPT_PIN is HIGH, is this a mistake?
     if (digitalRead(PINS::RTC_SQW) == LOW) {
       current_state = AlarmState::AlarmOn;
     }
@@ -102,7 +96,8 @@ void loop() {
 
     //-------------------------AlarmOn-------------------------------
   case AlarmState::AlarmOn:
-    beep();
+    // beep();
+    pulsed_beep();
     if (button_pressed()) {
       current_state = AlarmState::AlarmOff;
     }
