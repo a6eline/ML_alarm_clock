@@ -1,4 +1,13 @@
 
+
+//---------------------------------------------------------------RTC-and-LCD.cpp------------------------------------------------------------------------------------------------
+
+    // all the pin declarations go in here so it is easy to find
+    // they are in namespace and will be explicitly scoped 
+    // using constexpr so that they wont be preprocessed
+    // this way they are only declared when used
+
+
 #pragma once
 
 namespace PINS {
@@ -13,17 +22,17 @@ namespace PINS {
   //--RTC DS3231--------------
   constexpr auto RTC_SQW = 12;
 
-  //--INMP441 (I²S)-----------
-  constexpr auto I2S_BCLK = 3;
-  constexpr auto I2S_WS   = 4;
-  constexpr auto I2S_DOUT = 2;
+  //--INMP441 (I²S)-----------  
+  constexpr auto I2S_SD   = 2; // serial data 
+  constexpr auto I2S_WS   = 4; // word select 
+  constexpr auto I2S_SCK  = 3; // serial clock
 
-  //-Buzzer--------------------
+  //--Buzzer-------------------
   constexpr auto BUZZER = 13;
 
-  //--Button (Optional)--------
+  //--Button-(Optional)--------
   constexpr auto BUTTON = 11;
 
-  //--LED (Optional)-----------
+  //--LED-(Optional)-----------
   constexpr auto LED = 11;
 }
