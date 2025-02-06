@@ -1,8 +1,7 @@
 
 //----------------------------------------------------------------functions.cpp------------------------------------------------------------------------------------------------
 
-  // this is the file for all the c++ functions needed in the arduino
-  // this is so that the project participants who are not familiar with C++ or Arduino keywords can still participate 
+  // this is the file for all the extra modules and functions 
 
 #include "functions.h"
 #include "pins.h"
@@ -30,6 +29,17 @@ void silence() {
 // functions.cpp --- buzzer beeping noise 
 void beep(void) {
   digitalWrite(PINS::BUZZER, HIGH); 
+}
+
+// functions.cpp --- buzzer pulse beeping with half a second intervals
+void pulsed_beep() {
+  static auto  beep_millis = millis(); // a static variable so it only executes once at the start
+  constexpr auto pause = 500; 
+
+  if (millis() - beep_millis > pause) {
+      digitalWrite(PINS::BUZZER, !digitalRead(PINS::BUZZER)); 
+    beep_millis = millis();
+  }
 }
 
 //-------------------------------------------------------------------LED------------------------------------------------------------------------------------------------
