@@ -5,6 +5,7 @@
   // this is so that the project participants who are not familiar with C++ or Arduino keywords can still participate 
 
 #include "functions.h"
+#include "pins.h"
 
 //-------------------------------------------------------------------SERIAL------------------------------------------------------------------------------------------------
 
@@ -17,35 +18,35 @@ void serial_setup() {
 //-------------------------------------------------------------------BUZZER------------------------------------------------------------------------------------------------
 // functions.cpp --- setting up the buzzer
 void buzzer_setup() {
-  pinMode(BUZZER_PIN, OUTPUT);
-  digitalWrite(BUZZER_PIN, LOW); 
+  pinMode(PINS::BUZZER, OUTPUT);
+  digitalWrite(PINS::BUZZER, LOW); 
 }
 
 // functions.cpp --- shut the buzzer up
 void silence() {
-  digitalWrite(BUZZER_PIN, LOW); 
+  digitalWrite(PINS::BUZZER, LOW); 
 }
 
 // functions.cpp --- buzzer beeping noise 
 void beep(void) {
-  digitalWrite(BUZZER_PIN, HIGH); 
+  digitalWrite(PINS::BUZZER, HIGH); 
 }
 
 //-------------------------------------------------------------------LED------------------------------------------------------------------------------------------------
 
 // functions.cpp --- void function, sets up the LED_PINs 
 void led_setup() {
-  pinMode(LED_PIN, OUTPUT); 
+  pinMode(PINS::LED, OUTPUT); 
 }
 
 // functions.cpp --- a void function with parameters 1 to turn on LED, 0 to turn it off.
 void led_status(Signal status) {
   switch(status) { 
   case Signal::High:
-    digitalWrite(LED_PIN, HIGH);
+    digitalWrite(PINS::LED, HIGH);
     break;
   case Signal::Low:
-    digitalWrite(LED_PIN, LOW);
+    digitalWrite(PINS::LED, LOW);
     break;
   default:
     Serial.println("LED function input must be 0 or 1");
@@ -56,7 +57,7 @@ void led_status(Signal status) {
 
 // functions.cpp --- sets up the button pins, attatches a silence interupt.
 void button_setup() {
-  pinMode(BUTTON_PIN, INPUT);  // setting button to be an input pin 
+  pinMode(PINS::BUTTON, INPUT);  // setting button to be an input pin 
   // attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), on_button, FALLING); 
   //    ^ uncommented because not needed with FSM, but maybe can include if you want
 }
@@ -67,7 +68,7 @@ bool button_pressed() {
   constexpr auto DEBOUNCE_DELAY = 50;  // constant debounce variable
   const auto current_time = millis();
 
-  if(digitalRead(BUTTON_PIN) == HIGH) {
+  if(digitalRead(PINS::BUTTON) == HIGH) {
     if (current_time - prev_btn_time > DEBOUNCE_DELAY) {
       prev_btn_time = current_time;}
     return true; 

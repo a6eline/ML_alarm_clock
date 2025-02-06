@@ -10,8 +10,6 @@
 
 extern RTC_DS3231 rtc; 
 
-#define CLOCK_INTERRUPT_PIN 4
-
 // ------------------------ ENUM-ALIASING -------------------------------
 
 // Ds3231Alarm1Mode & Ds3231Alarm2Mode is defined in RTClib.h line 55-76
@@ -28,18 +26,17 @@ namespace AlarmMode {
   constexpr auto A2_HOUR    =   DS3231_A2_Hour;
 }
 
+// different alarm nums 
 enum class Alarm {A1, A2};
 
+// this is to set up the timers/Alarms 
 struct AlarmTime {
   uint32_t hour;
   uint32_t minute;
   uint32_t second;
-
-  // constructor definition with default arguments
-  constexpr AlarmTime(uint32_t h = 0, uint32_t m = 0, uint32_t s = 0)
-      : hour(h), minute(m), second(s) {}
 };
 
+// AlarmDuration will be used for timers
 using AlarmDuration = AlarmTime;
 
 //------------------------SETUP-------------------------------
@@ -73,6 +70,9 @@ bool alarm_fired();   // checks if alarm has been fired or not --> will be used 
 //------------------------MISC-------------------------------
 void on_alarm();          // serial.print when alarm occures, used in --> rtc_setup attatchInterupt() function
 
+
+
+//------------------------TEMPLATES-------------------------------
 // RTC_and_LCD.cpp --- this is a timer template function which can go from seconds to hours and take in multiple types
 // template<AlarmNum alarm>
 // struct AlarmModeTraits {}

@@ -5,10 +5,6 @@
 
 #include <Arduino.h>
 
-constexpr auto LED_PIN = 1; // for when you have an LED
-constexpr auto BUTTON_PIN = 2;  
-constexpr auto BUZZER_PIN = 3;
-
 enum class Signal { Low, High };
 
 //------------------------SERIAL----------------------------

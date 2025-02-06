@@ -31,10 +31,17 @@
     // info about DS3231 modes are in RTC_and_LCD.h
 
 #include "RTC_and_LCD.h"
-#include <EEPROM.h>
+#include "pins.h"
+
+    // constexpr auto LCD_RS = 5;
+    // constexpr auto LCD_E  = 6;
+    // constexpr auto LCD_D4 = 7;
+    // constexpr auto LCD_D5 = 8;
+    // constexpr auto LCD_D6 = 9;
+    // constexpr auto LCD_D7 = 10;
 
 // Creating objects of the LCD and RTC 
-static LiquidCrystal lcd(5, 6, 7, 8, 9, 10); //Pins: RS, E, D4, D5, D6, D7
+static LiquidCrystal lcd(PINS::LCD_RS, PINS::LCD_E, PINS::LCD_D4, PINS::LCD_D5, PINS::LCD_D6, PINS::LCD_D7); 
 RTC_DS3231 rtc; 
 
 //---------------------------------------------------------------------RTC----------------------------------------------------------------------------------------------
@@ -89,8 +96,8 @@ void rtc_setup() {
   // ONLY SET TIME ONCE WHEN INITIATED 
   // rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); 
 
-  pinMode(CLOCK_INTERRUPT_PIN, INPUT_PULLUP);                                     // Setting sqw pinmode to high --> LOW == alarm is fired 
-  attachInterrupt(digitalPinToInterrupt(CLOCK_INTERRUPT_PIN), on_alarm, FALLING); // The interupt is triggered when the pin falls from high to low
+  pinMode(PINS::RTC_SQW, INPUT_PULLUP);                                     // Setting sqw pinmode to high --> LOW == alarm is fired 
+  attachInterrupt(digitalPinToInterrupt(PINS::RTC_SQW), on_alarm, FALLING); // The interupt is triggered when the pin falls from high to low
   rtc.writeSqwPinMode(DS3231_OFF);                                                // stop oscillating signals at SQW Pin otherwise setAlarm1 will fail
   
   // set alarm 1, 2 flag to false (so alarm 1, 2 didn't happen so far)
@@ -221,13 +228,13 @@ void delete_alarm(Alarm alarm) {
   rtc.disableAlarm(alarm_num);    // disable the specified alarm
   rtc.clearAlarm(alarm_num);      // clear the specified alarm
 
-  // digitalWrite(CLOCK_INTERRUPT_PIN, LOW);  // Set the interrupt pin LOW
+  // digitalWrite(PINS::RTC_SQW, LOW);  // Set the interrupt pin LOW
   delay(200);
 
   rtc.writeSqwPinMode(DS3231_OFF);  // disable square wave output
   rtc.clearAlarm(alarm_num);      // clear lingering flags
 
-  const auto pin = digitalRead(CLOCK_INTERRUPT_PIN);
+  const auto pin = digitalRead(PINS::RTC_SQW);
   Serial.print("    Interrupt pin state after clearing alarm: ");
   Serial.println(pin);
 
@@ -243,7 +250,7 @@ void delete_alarm(Alarm alarm) {
 // RTC_and_LCD.cpp --- bool to check whether alarm is fired
 bool alarm_fired() {
   // returns true if the SQW pin is fired --> LOW=LOW --> true (because INPUT_PULLUP)
-  return (digitalRead(CLOCK_INTERRUPT_PIN) == LOW);
+  return (digitalRead(PINS::RTC_SQW) == LOW);
 }
 
 //-------------------------------------------------------------------MISC------------------------------------------------------------------------------------------------
