@@ -5,29 +5,31 @@
 
 #include <Arduino.h>
 
-#define LED_PIN 1 // for when you have an LED
-#define BUTTON_PIN 2  
-#define BUZZER_PIN 3
+constexpr auto LED_PIN = 1; // for when you have an LED
+constexpr auto BUTTON_PIN = 2;  
+constexpr auto BUZZER_PIN = 3;
+
+enum class Signal { Low, High };
 
 //------------------------SERIAL----------------------------
 
-void serial_setup(void);  // serial monitor begin setup
+void serial_setup();  // serial monitor begin setup
 
 //------------------------LED-------------------------------
 
-void buzzer_setup(void);  // buzzer setup pins
-void silence(void);       // silences buzzer
-void beep(void);          // beeps the buzzer
+void buzzer_setup();  // buzzer setup pins
+void silence();       // silences buzzer
+void beep();          // beeps the buzzer
 
 //------------------------LED-------------------------------
 
-void led_setup(void);     // sets up LEDs
-void led_status(int status); // toggles LED on or off
+void led_setup();     // sets up LEDs
+void led_status(Signal status); // toggles LED on or off
 
 //------------------------BUTTON----------------------------
 
-void button_setup(void);  // button setup
-bool button_status(void); // checks if button has been pressed
+void button_setup();  // button setup
+bool button_pressed(); // checks if button has been pressed
 void on_button();         // button pressed serial print message
 
 //------------------------MISC------------------------------
