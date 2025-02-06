@@ -9,19 +9,20 @@
 //-------------------------------------------------------------------SERIAL------------------------------------------------------------------------------------------------
 
 // functions.cpp --- sets up the serial monitor
-void serial_setup(void) {
+void serial_setup() {
   Serial.begin(9600); // Setup for serial monitor 
-  while (!Serial); }
+  while (!Serial); 
+}
 
 //-------------------------------------------------------------------BUZZER------------------------------------------------------------------------------------------------
 // functions.cpp --- setting up the buzzer
-void buzzer_setup(void) {
+void buzzer_setup() {
   pinMode(BUZZER_PIN, OUTPUT);
   digitalWrite(BUZZER_PIN, LOW); 
 }
 
 // functions.cpp --- shut the buzzer up
-void silence(void) {
+void silence() {
   digitalWrite(BUZZER_PIN, LOW); 
 }
 
@@ -33,41 +34,46 @@ void beep(void) {
 //-------------------------------------------------------------------LED------------------------------------------------------------------------------------------------
 
 // functions.cpp --- void function, sets up the LED_PINs 
-void led_setup(void) {
+void led_setup() {
   pinMode(LED_PIN, OUTPUT); 
-  }
+}
 
 // functions.cpp --- a void function with parameters 1 to turn on LED, 0 to turn it off.
-void led_status(int status) {
-  if (status == 1) {
-    digitalWrite(LED_PIN, HIGH); }
-  else if (status == 0) {
-    digitalWrite(LED_PIN, LOW); }
-  else {
-    Serial.println("LED function input must be 0 or 1"); }
+void led_status(Signal status) {
+  switch(status) { 
+  case Signal::High:
+    digitalWrite(LED_PIN, HIGH);
+    break;
+  case Signal::Low:
+    digitalWrite(LED_PIN, LOW);
+    break;
+  default:
+    Serial.println("LED function input must be 0 or 1");
+  }
 }
 
 //-------------------------------------------------------------------BUTTON------------------------------------------------------------------------------------------------
 
 // functions.cpp --- sets up the button pins, attatches a silence interupt.
-void button_setup(void) {
+void button_setup() {
   pinMode(BUTTON_PIN, INPUT);  // setting button to be an input pin 
   // attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), on_button, FALLING); 
   //    ^ uncommented because not needed with FSM, but maybe can include if you want
 }
 
 // functions.cpp --- checks if button has been pressed + debounce checker of 50ms
-bool button_status(void) {
-  static unsigned long prev_btn_time = 0;   // tracks the previous press time which is initially 0 
-  const unsigned long DEBOUNCE_DELAY = 50;  // constant debounce variable
-  unsigned long current_time = millis();
+bool button_pressed() {
+  static auto prev_btn_time = 0;   // tracks the previous press time which is initially 0 
+  constexpr auto DEBOUNCE_DELAY = 50;  // constant debounce variable
+  const auto current_time = millis();
 
   if(digitalRead(BUTTON_PIN) == HIGH) {
     if (current_time - prev_btn_time > DEBOUNCE_DELAY) {
       prev_btn_time = current_time;}
-    return true; }
-  else {
-    return false; }
+    return true; 
+  } else {
+    return false; 
+  }
 }
 
 // functions.cpp --- if button is on, it will serial print ("Button pressed!")
@@ -80,13 +86,16 @@ void on_button() {
 
 // functions.cpp --- counts 3 seconds without delay, doesnt work tho, i'll sort that out later
 void count_second(int n) {
-  static unsigned long timer_millis = millis();
-  const int one_sec = 1000;
-
-  for (int i = 1; i <= n; i++) { // Loop n times
-    if (millis() - timer_millis > one_sec ) {
+  constexpr auto one_sec = 1000;
+  auto timer_millis = millis();
+  
+  for (int i = 0; i < n;) { // Loop n times
+    if ((millis() - timer_millis) > one_sec) {
       Serial.println(n);
-      timer_millis = millis(); } }
+      timer_millis = millis();
+      i++;
+    }
+  }
 }
 
 
