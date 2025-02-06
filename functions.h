@@ -16,6 +16,7 @@ void serial_setup();  // serial monitor begin setup
 void buzzer_setup();  // buzzer setup pins
 void silence();       // silences buzzer
 void beep();          // beeps the buzzer
+void pulsed_beep();
 
 //------------------------LED-------------------------------
 
