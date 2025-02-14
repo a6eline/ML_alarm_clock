@@ -33,7 +33,7 @@
   // so that there arent multiple alarms going off at once which can affect the system turning off the buzzer
 
 #include "RTC_and_LCD.h"
-#include "esp_connection.h"
+// #include "esp_connection.h"
 #include "functions.h"
 #include "pins.h"
 
@@ -48,7 +48,7 @@ enum class AlarmState : uint8_t {
 //---------------------------------------------------------------------SETUP----------------------------------------------------------------------------------------------
 
 void setup() {
-  delay(1000); // delay to allow certain boards to upload safely
+  delay(5000); // delay to allow certain boards to upload safely
 
   //------------------------------------------SETUP-FUNCTIONS---------------------------------------
   lcd_setup();   
@@ -61,7 +61,7 @@ void setup() {
 
   //------------------------------------------TIMER-------------------------------------------------
   set_timer<Alarm::A1>(AlarmDuration {0, 0, 3}, AlarmMode::A1_HOUR);
-  //count_seconds(3); // to test if you have a timer for n seconds, prints seconds in Serial Monitor
+  //count_seconds(3); // test the
 
   //------------------------------------------ALARM-------------------------------------------------
   // set_daily_alarm(AlarmTime {12, 0, 0}); // everyday alarm at HH:MM

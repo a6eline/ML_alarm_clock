@@ -11,12 +11,12 @@ enum class Signal { Low, High };
 
 void serial_setup();  // serial monitor begin setup
 
-//------------------------LED-------------------------------
+//------------------------BUZZER-------------------------------
 
 void buzzer_setup();  // buzzer setup pins
 void silence();       // silences buzzer
 void beep();          // beeps the buzzer
-void pulsed_beep();
+void pulsed_beep();   // pulsed buzzer
 
 //------------------------LED-------------------------------
 

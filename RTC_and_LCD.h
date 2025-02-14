@@ -85,22 +85,23 @@ template<> struct DefaultMode<Alarm::A2> { static constexpr auto mode = AlarmMod
 
 template<Alarm alarm, typename M>
 void set_timer(const AlarmDuration& duration, M mode = DefaultMode<alarm>::mode) {
-  const auto& [hour, minute, second] = duration;
+  const auto &d = duration;  // d is a reference to duration
+  const auto hour = d.hour, minute = d.minute, second = d.second;
 
   Serial.println();     Serial.print("TIMER --> ");
-  Serial.print(hour);   Serial.print(" hr(s) and ");
-  Serial.print(minute); Serial.print(" min(s) and ");
-  Serial.print(second); Serial.print(" sec(s)");
+  Serial.print(d.hour);   Serial.print(" hr(s) and ");
+  Serial.print(d.minute); Serial.print(" min(s) and ");
+  Serial.print(d.second); Serial.print(" sec(s)");
 
   // using constexpr so that it is only branched when used, doesnt compile unused branch
   if constexpr (alarm == Alarm::A1) {
-    if (rtc.setAlarm1(rtc.now() + TimeSpan(0, hour, minute, second), mode)) {
+    if (rtc.setAlarm1(rtc.now() + TimeSpan(0, d.hour, d.minute, d.second), mode)) {
       Serial.println(" from now was SUCCESSFULLY set!");
     } else {
       Serial.println(" from now was NOT set!");
     }
   } else if constexpr (alarm == Alarm::A2) {
-    if (rtc.setAlarm2(rtc.now() + TimeSpan(0, hour, minute, second), mode)) {
+    if (rtc.setAlarm2(rtc.now() + TimeSpan(0, d.hour, d.minute, d.second), mode)) {
       Serial.println(" from now was SUCCESSFULLY set!");
     } else {
       Serial.println(" from now was NOT set!");

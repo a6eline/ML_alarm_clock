@@ -185,11 +185,12 @@ void timer(int hour, int minute, int second, Ds3231Alarm1Mode alarm_mode) {
 
 // RTC_and_LCD.cpp --- this function sets an alarm everyday for HOUR:MINUTE in 24hr code
 void set_daily_alarm(const AlarmTime& time) {
-  const auto& [hour, minute, second] = time;
+  const auto& t = time;  // ✅ Now using the correct variable name
+  const auto hour = t.hour, minute = t.minute, second = t.second;
 
   // "Alarm for HH:MM has NOT/SUCCESSFULLY been set"
   Serial.println();
-  Serial.print("ALARM ---> "); Serial.print(hour); Serial.print(":"); Serial.print(minute);
+  Serial.print("ALARM ---> "); Serial.print(t.hour); Serial.print(":"); Serial.print(t.minute);
 
   if(rtc.setAlarm1(DateTime(0, 0, 0, hour, minute, second), AlarmMode::A1_HOUR)) {
     Serial.println(" has SUCCESSFULLY been set!");

@@ -24,8 +24,8 @@ namespace PINS {
 
   //--INMP441 (I²S)-----------  
   constexpr auto I2S_SD   = 2; // serial data 
-  constexpr auto I2S_WS   = 4; // word select 
-  constexpr auto I2S_SCK  = 3; // serial clock
+  constexpr auto I2S_WS   = 3; // word select 
+  constexpr auto I2S_SCK  = 4; // serial clock
 
   //--Buzzer-------------------
   constexpr auto BUZZER = 13;
