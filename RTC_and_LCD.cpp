@@ -221,17 +221,12 @@ void delete_alarm(Alarm alarm) {
   constexpr int alarm_numbers[] = {
     [(int) Alarm::A1] = 1, 
     [(int) Alarm::A2] = 2
-  }; // can also use a switch case for this 
-
+  };
   const auto alarm_num = alarm_numbers[(int)alarm]; 
 
-  rtc.disableAlarm(alarm_num);    // disable the specified alarm
+  // rtc.disableAlarm(alarm_num);    // disable the specified alarm
   rtc.clearAlarm(alarm_num);      // clear the specified alarm
-
   // digitalWrite(PINS::RTC_SQW, LOW);  // Set the interrupt pin LOW
-  delay(200);
-
-  rtc.writeSqwPinMode(DS3231_OFF);  // disable square wave output
   rtc.clearAlarm(alarm_num);      // clear lingering flags
 
   const auto pin = digitalRead(PINS::RTC_SQW);
