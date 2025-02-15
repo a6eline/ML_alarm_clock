@@ -10,6 +10,7 @@
 
 #pragma once
 
+
 namespace PINS {
   //--LCD1602 (4-bit mode)----
   constexpr auto LCD_RS = 5;

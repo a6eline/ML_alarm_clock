@@ -185,7 +185,7 @@ void timer(int hour, int minute, int second, Ds3231Alarm1Mode alarm_mode) {
 
 // RTC_and_LCD.cpp --- this function sets an alarm everyday for HOUR:MINUTE in 24hr code
 void set_daily_alarm(const AlarmTime& time) {
-  const auto& t = time;  // ✅ Now using the correct variable name
+  const auto& t = time;  
   const auto hour = t.hour, minute = t.minute, second = t.second;
 
   // "Alarm for HH:MM has NOT/SUCCESSFULLY been set"

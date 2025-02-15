@@ -51,13 +51,13 @@ void setup() {
   delay(5000); // delay to allow certain boards to upload safely
 
   //------------------------------------------SETUP-FUNCTIONS---------------------------------------
-  lcd_setup();   
+  lcd_setup();
   checkRTC();
-  rtc_setup();    
+  rtc_setup();
   display_time();
   serial_setup();
   buzzer_setup();
-  button_setup(); 
+  button_setup();
 
   //------------------------------------------TIMER-------------------------------------------------
   set_timer<Alarm::A1>(AlarmDuration {0, 0, 3}, AlarmMode::A1_HOUR);
@@ -74,7 +74,7 @@ static auto previous_state = AlarmState::AlarmOff;  // previous state
 
 void loop() {
   display_time(); // display the time onto LCD screen (RTC_and_LCD.cpp/h)
-
+  print_SQW();
   //--------------------------------------FINITE-STATE-MACHINE----------------------------------------------
 
   // function to check and print the state changes
@@ -92,6 +92,7 @@ void loop() {
     if (digitalRead(PINS::RTC_SQW) == LOW) {
       current_state = AlarmState::AlarmOn;
     }
+
     break;
 
     //-------------------------AlarmOn-------------------------------
@@ -130,7 +131,6 @@ void print_state(AlarmState state) { //  <---  no need to use & as this is a "re
   case AlarmState::AlarmOn:
     Serial.println();
     Serial.println("STATE --> ALARM ON");
-    Serial.println("    Buzzer on, beep. . .");
     break;
 
   case AlarmState::AlarmOff:
@@ -146,4 +146,15 @@ void test_components() {
   led_status(button_pressed() ? Signal::High : Signal::Low);
 }
 
+void print_SQW() {
+  static auto  prev_millis = millis(); 
+  static auto current_millis = millis();
+  constexpr auto second = 1000; // 1 second
+
+  if (millis() - prev_millis > second) {
+    Serial.print("    SQW pin value--> ");
+    Serial.println(digitalRead(PINS::RTC_SQW));
+    prev_millis = current_millis;
+  }
+}
 

@@ -85,7 +85,7 @@ template<> struct DefaultMode<Alarm::A2> { static constexpr auto mode = AlarmMod
 
 template<Alarm alarm, typename M>
 void set_timer(const AlarmDuration& duration, M mode = DefaultMode<alarm>::mode) {
-  const auto &d = duration;  // d is a reference to duration
+  const auto &d = duration;  
   const auto hour = d.hour, minute = d.minute, second = d.second;
 
   Serial.println();     Serial.print("TIMER --> ");
