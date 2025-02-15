@@ -27,14 +27,14 @@ namespace PINS {
   constexpr auto BUZZER = 3;
 
   //--Button-(Optional)--------
-  constexpr auto BUTTON = 11;
+  constexpr auto BUTTON = 4;
 
   //--LED-(Optional)-----------
   constexpr auto LED = 11;
 
   //--INMP441(I²S)-(Optional)-- 
-  constexpr auto I2S_SD   = 2; // serial data 
-  constexpr auto I2S_WS   = 3; // word select 
-  constexpr auto I2S_SCK  = 4; // serial clock
+  // constexpr auto I2S_SD   = 2; // serial data 
+  // constexpr auto I2S_WS   = 3; // word select 
+  // constexpr auto I2S_SCK  = 4; // serial clock
 
 }
