@@ -42,6 +42,38 @@ void pulsed_beep() {
   }
 }
 
+//-------------------------------------------------------------------BUTTON------------------------------------------------------------------------------------------------
+
+// functions.cpp --- sets up the button pins, attatches a silence interupt.
+void button_setup() {
+  pinMode(PINS::BUTTON,INPUT);  // there is an externel pullup resistor 
+  // attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), on_button, FALLING); 
+  //    ^ uncommented because not needed with FSM, but maybe can include if you want
+}
+
+// functions.cpp --- checks if button has been pressed + debounce checker of 50ms
+bool button_pressed() {
+  static auto prev_btn_time = 0;   // tracks the previous press time which is initially 0
+  constexpr auto DEBOUNCE_DELAY = 50;  // constant debounce variable
+  const auto current_time = millis();
+
+  if (digitalRead(PINS::BUTTON) == HIGH) {
+    if ((current_time - prev_btn_time) > DEBOUNCE_DELAY) {
+      prev_btn_time = current_time;
+    }
+    Serial.println("    -- BUTTON PRESSED");
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// functions.cpp --- if button is on, it will serial print ("Button pressed!")
+//    ^ this is for attachInterupt function in button_setup()
+void on_button() {
+  Serial.println("Button Pressed!");
+}
+
 //-------------------------------------------------------------------LED------------------------------------------------------------------------------------------------
 
 // functions.cpp --- void function, sets up the LED_PINs 
@@ -63,36 +95,6 @@ void led_status(Signal status) {
   }
 }
 
-//-------------------------------------------------------------------BUTTON------------------------------------------------------------------------------------------------
-
-// functions.cpp --- sets up the button pins, attatches a silence interupt.
-void button_setup() {
-  pinMode(PINS::BUTTON, INPUT);  // setting button to be an input pin 
-  // attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), on_button, FALLING); 
-  //    ^ uncommented because not needed with FSM, but maybe can include if you want
-}
-
-// functions.cpp --- checks if button has been pressed + debounce checker of 50ms
-bool button_pressed() {
-  static auto start_time = 0;   // tracks the previous press time which is initially 0 
-  constexpr auto DEBOUNCE_DELAY = 50;  // constant debounce variable
-  const auto current_time = millis();
-
-  if (current_time - start_time > DEBOUNCE_DELAY) { 
-    if (digitalrRead(PINS::BUTTON)) {
-      start_time = current_time;
-      return true;
-    }
-  }
-  return false;
-}
-
-// functions.cpp --- if button is on, it will serial print ("Button pressed!")
-//    ^ this is for attachInterupt function in button_setup()
-void on_button() {
-  Serial.println("Button Pressed!");
-}
-
 //-------------------------------------------------------------------MISC------------------------------------------------------------------------------------------------
 
 // functions.cpp --- counts 3 seconds without delay, doesnt work tho, i'll sort that out later
@@ -108,6 +110,8 @@ void count_second(int n) {
     }
   }
 }
+
+
 
 
 
