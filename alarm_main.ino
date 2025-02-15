@@ -62,11 +62,11 @@ void setup() {
   //------------------------------------------TIMER-------------------------------------------------
   //set_timer<Alarm::A1>(AlarmDuration {0, 0, 3}, AlarmMode::A1_HOUR);
   //count_seconds(3); 
-  //timer(0, 0, 3, AlarmMode::A1_HOUR);
+  timer(0, 0, 3, AlarmMode::A1_HOUR);
 
   //------------------------------------------ALARM-------------------------------------------------
-  //set_daily_alarm(AlarmTime {19, 25, 0}); // everyday alarm at HH:MM
-  set_alarm();
+  // set_daily_alarm(AlarmTime {19, 25, 0}); // everyday alarm at HH:MM
+  // set_alarm();
 }
 
 //---------------------------------------------------------------------ALARM-LOOP----------------------------------------------------------------------------------------------
