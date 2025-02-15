@@ -28,7 +28,8 @@
 
   //------------------------IMPORTANT-INFO----------------------------
 
-    // a state for checking voice recognition will be added in soon
+  // rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); INFO IN RTC_and_LCD.cpp
+  // a state for checking voice recognition will be added in soon
   // default state is so that the device only checks for the SQW pin being high WHEN the alarm is off
   // so that there arent multiple alarms going off at once which can affect the system turning off the buzzer
 
@@ -60,11 +61,12 @@ void setup() {
   button_setup();
 
   //------------------------------------------TIMER-------------------------------------------------
-  set_timer<Alarm::A1>(AlarmDuration {0, 0, 3}, AlarmMode::A1_HOUR);
-  //count_seconds(3); // test the
+  //set_timer<Alarm::A1>(AlarmDuration {0, 0, 3}, AlarmMode::A1_HOUR);
+  //count_seconds(3); 
+  timer(0, 0, 3, AlarmMode::A1_HOUR);
 
   //------------------------------------------ALARM-------------------------------------------------
-  // set_daily_alarm(AlarmTime {12, 0, 0}); // everyday alarm at HH:MM
+  //set_daily_alarm(AlarmTime {19, 25, 0}); // everyday alarm at HH:MM
 }
 
 //---------------------------------------------------------------------ALARM-LOOP----------------------------------------------------------------------------------------------
@@ -131,6 +133,7 @@ void print_state(AlarmState state) { //  <---  no need to use & as this is a "re
   case AlarmState::AlarmOn:
     Serial.println();
     Serial.println("STATE --> ALARM ON");
+    Serial.println("    -- ALARM occured!");
     break;
 
   case AlarmState::AlarmOff:
@@ -147,14 +150,13 @@ void test_components() {
 }
 
 void print_SQW() {
-  static auto  prev_millis = millis(); 
-  static auto current_millis = millis();
-  constexpr auto second = 1000; // 1 second
+  static auto  SQW_millis = millis(); 
+  constexpr auto SQW_pause = 5000; 
 
-  if (millis() - prev_millis > second) {
+  if (millis() - SQW_millis > SQW_pause) {
     Serial.print("    SQW pin value--> ");
     Serial.println(digitalRead(PINS::RTC_SQW));
-    prev_millis = current_millis;
+    SQW_millis = millis();
   }
 }
 

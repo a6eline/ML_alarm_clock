@@ -20,20 +20,21 @@ namespace PINS {
   constexpr auto LCD_D6 = 9;
   constexpr auto LCD_D7 = 10;
 
-  //--RTC DS3231--------------
-  constexpr auto RTC_SQW = 12;
-
-  //--INMP441 (I²S)-----------  
-  constexpr auto I2S_SD   = 2; // serial data 
-  constexpr auto I2S_WS   = 3; // word select 
-  constexpr auto I2S_SCK  = 4; // serial clock
+  //--RTC-DS3231--------------
+  constexpr auto RTC_SQW = 2;
 
   //--Buzzer-------------------
-  constexpr auto BUZZER = 13;
+  constexpr auto BUZZER = 3;
 
   //--Button-(Optional)--------
   constexpr auto BUTTON = 11;
 
   //--LED-(Optional)-----------
   constexpr auto LED = 11;
+
+  //--INMP441(I²S)-(Optional)-- 
+  constexpr auto I2S_SD   = 2; // serial data 
+  constexpr auto I2S_WS   = 3; // word select 
+  constexpr auto I2S_SCK  = 4; // serial clock
+
 }

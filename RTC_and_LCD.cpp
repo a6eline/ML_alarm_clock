@@ -37,6 +37,8 @@
 static LiquidCrystal lcd(PINS::LCD_RS, PINS::LCD_E, PINS::LCD_D4, PINS::LCD_D5, PINS::LCD_D6, PINS::LCD_D7); 
 RTC_DS3231 rtc; 
 
+volatile bool alarm_triggered = false;
+
 //---------------------------------------------------------------------RTC----------------------------------------------------------------------------------------------
 
 // RTC_and_LCD.cpp --- checks if the I2C communication is successful and if the RTC module has power
@@ -85,7 +87,6 @@ void checkRTC() {
 
 // RTC_and_LCD.cpp --- set up the RTC module's pins, attatch pin interupt, disable previous alarms and more - check 
 void rtc_setup() {
-
   // ONLY SET TIME ONCE WHEN INITIATED 
   // rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); 
 
@@ -103,6 +104,11 @@ void rtc_setup() {
   // turn off alarm 2 (in case it isn't off already)
   // again, this isn't done at reboot, so a previously set alarm could easily go overlooked
   rtc.disableAlarm(2);
+
+  // checking temperature at startup just incase
+  Serial.print("Temperature: ");
+  Serial.print(rtc.getTemperature());
+  Serial.println(" C");
 }
 
 //----------------------------------------------------------------LCD-1602---------------------------------------------------------------------------------------------------
@@ -127,21 +133,21 @@ constexpr char* dayNames[] = {"Sun" , "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 // RTC_and_LCD.cpp --- display the current time onto the LCD screen via DS3231 RTC data. This setup is kind of ugly, I might change it in the future :P
 void display_time() {
   static auto display_millis = millis(); // a static variable so it only executes once at the start
-  constexpr auto one_sec = 1000;                       // 1000 millis is 1 second
+  constexpr auto one_sec = 1000;         // 1000 millis is 1 second
 
   if (millis() - display_millis > one_sec) {
-    const auto now = rtc.now();                     // update the now time
+    const auto now = rtc.now();                   // update the now time
     lcd.clear();                                  // Clear the LCD screen
     //-------------------------DISPLAY-WEEKDAY----------------------------
     lcd.setCursor(0, 0);                          // set cursor to column 0, row 0
     lcd.print(dayNames[now.dayOfTheWeek()]);      // day of the week
-    lcd.print(' ');                               
+    lcd.print(' ');
     //-------------------------DISPLAY-12HR-------------------------------
     auto hour = now.hour() % 12;
     if (hour == 0) hour = 12;                     // adjust for 12-hour format
     if (hour < 10) lcd.print('0');                // add leading zero for hour if necessary
-    lcd.print(hour, DEC); 
-    lcd.print(':');         
+    lcd.print(hour, DEC);
+    lcd.print(':');
     //-------------------------DISPLAY-MINUTE-------------------------------
     if (now.minute() < 10) lcd.print('0');        // add leading zero for minute if necessary
     lcd.print(now.minute(), DEC);                 // print the current minute
@@ -192,7 +198,7 @@ void set_daily_alarm(const AlarmTime& time) {
   Serial.println();
   Serial.print("ALARM ---> "); Serial.print(t.hour); Serial.print(":"); Serial.print(t.minute);
 
-  if(rtc.setAlarm1(DateTime(0, 0, 0, hour, minute, second), AlarmMode::A1_HOUR)) {
+  if(rtc.setAlarm1(DateTime(0, 0, 0, t.hour, t.minute, t.second), AlarmMode::A1_HOUR)) {
     Serial.println(" has SUCCESSFULLY been set!");
   } else {
     Serial.println(" has NOT been set! (ERROR)");
@@ -234,6 +240,7 @@ void delete_alarm(Alarm alarm) {
 
   if (pin == HIGH) {
     Serial.println("       -- ALARM cleared successfully.");
+    alarm_triggered = false;
   } else {
     Serial.println("       -- ERROR: Failed to clear alarm.");
   }
@@ -251,7 +258,7 @@ bool alarm_fired() {
 
 // RTC_and_LCD.cpp --- serial print that the alarm has occured. needed to attatch interupt to the SQW 
 void on_alarm() {
-    Serial.println("    -- ALARM occured!");
+  alarm_triggered = true;
 }
 
 

@@ -74,17 +74,17 @@ void button_setup() {
 
 // functions.cpp --- checks if button has been pressed + debounce checker of 50ms
 bool button_pressed() {
-  static auto prev_btn_time = 0;   // tracks the previous press time which is initially 0 
+  static auto start_time = 0;   // tracks the previous press time which is initially 0 
   constexpr auto DEBOUNCE_DELAY = 50;  // constant debounce variable
   const auto current_time = millis();
 
-  if(digitalRead(PINS::BUTTON) == HIGH) {
-    if (current_time - prev_btn_time > DEBOUNCE_DELAY) {
-      prev_btn_time = current_time;}
-    return true; 
-  } else {
-    return false; 
+  if (current_time - start_time > DEBOUNCE_DELAY) { 
+    if (digitalrRead(PINS::BUTTON)) {
+      start_time = current_time;
+      return true;
+    }
   }
+  return false;
 }
 
 // functions.cpp --- if button is on, it will serial print ("Button pressed!")
