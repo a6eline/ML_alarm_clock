@@ -54,7 +54,7 @@ void button_setup() {
 // functions.cpp --- checks if button has been pressed + debounce checker of 50ms
 bool button_pressed() {
   static auto prev_btn_time = 0;   // tracks the previous press time which is initially 0
-  constexpr auto DEBOUNCE_DELAY = 50;  // constant debounce variable
+  constexpr auto DEBOUNCE_DELAY = 50;  // constant debounce variablec
   const auto current_time = millis();
 
   if (digitalRead(PINS::BUTTON) == HIGH) {
