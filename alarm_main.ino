@@ -52,21 +52,21 @@ void setup() {
   delay(5000); // delay to allow certain boards to upload safely
 
   //------------------------------------------SETUP-FUNCTIONS---------------------------------------
+  serial_setup();
   lcd_setup();
   checkRTC();
   rtc_setup();
-  display_time();
-  serial_setup();
   buzzer_setup();
   button_setup();
 
   //------------------------------------------TIMER-------------------------------------------------
   //set_timer<Alarm::A1>(AlarmDuration {0, 0, 3}, AlarmMode::A1_HOUR);
   //count_seconds(3); 
-  timer(0, 0, 3, AlarmMode::A1_HOUR);
+  //timer(0, 0, 3, AlarmMode::A1_HOUR);
 
   //------------------------------------------ALARM-------------------------------------------------
   //set_daily_alarm(AlarmTime {19, 25, 0}); // everyday alarm at HH:MM
+  set_alarm();
 }
 
 //---------------------------------------------------------------------ALARM-LOOP----------------------------------------------------------------------------------------------
@@ -76,7 +76,7 @@ static auto previous_state = AlarmState::AlarmOff;  // previous state
 
 void loop() {
   display_time(); // display the time onto LCD screen (RTC_and_LCD.cpp/h)
-  print_SQW();
+  //print_SQW();
   //--------------------------------------FINITE-STATE-MACHINE----------------------------------------------
 
   // function to check and print the state changes
@@ -110,7 +110,6 @@ void loop() {
   case AlarmState::AlarmOff:
     delete_alarm(Alarm::A1);
     silence();
-    delay(500); // Allow some time for state to stabilize
     current_state = AlarmState::Default;
     break;
 
@@ -149,6 +148,7 @@ void test_components() {
   led_status(button_pressed() ? Signal::High : Signal::Low);
 }
 
+// function to check SQW pin incase frequently to see changes
 void print_SQW() {
   static auto  SQW_millis = millis(); 
   constexpr auto SQW_pause = 5000; 
