@@ -61,7 +61,7 @@ void set_daily_alarm(const AlarmTime& time); // sets a daily alarm (24HR paramet
 
 //------------------------RESET-------------------------------
 
-void delete_alarm(Alarm alarm); // deletes the alarm for it to be reset
+void clear_alarm(Alarm alarm); // deletes the alarm for it to be reset
 
 //------------------------FIRED-------------------------------
 

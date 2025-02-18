@@ -107,7 +107,7 @@ void loop() {
 
     //-------------------------AlarmOff---------------------------
   case AlarmState::AlarmOff:
-    delete_alarm(Alarm::A1);
+    clear_alarm(Alarm::A1);
     silence();
     current_state = AlarmState::Default;
     break;

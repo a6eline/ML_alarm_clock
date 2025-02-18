@@ -216,7 +216,7 @@ void set_alarm() {
 
 //------------------------------------------------------------------DELETE-ALARM-------------------------------------------------------------------------------------------------
 
-void delete_alarm(Alarm alarm) { 
+void clear_alarm(Alarm alarm) { 
   // initiating array indexes, 
   constexpr int alarm_numbers[] = {
     [(int) Alarm::A1] = 1, 
