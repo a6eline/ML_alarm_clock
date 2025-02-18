@@ -28,13 +28,12 @@
 
   //------------------------IMPORTANT-INFO----------------------------
 
-  // rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); INFO IN RTC_and_LCD.cpp
-  // a state for checking voice recognition will be added in soon
-  // default state is so that the device only checks for the SQW pin being high WHEN the alarm is off
-  // so that there arent multiple alarms going off at once which can affect the system turning off the buzzer
+    // rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); INFO IN RTC_and_LCD.cpp
+    // a state for checking voice recognition will be added in soon
+    // default state is so that the device only checks for the SQW pin being high WHEN the alarm is off
+    // so that there arent multiple alarms going off at once which can affect the system turning off the buzzer
 
 #include "RTC_and_LCD.h"
-// #include "esp_connection.h"
 #include "functions.h"
 #include "pins.h"
 
@@ -49,8 +48,8 @@ enum class AlarmState : uint8_t {
 //---------------------------------------------------------------------SETUP----------------------------------------------------------------------------------------------
 
 void setup() {
-  delay(5000); // delay to allow certain boards to upload safely
-
+  delay(5000); // delay is required for certain boards to finish compilation/upload  
+  
   //------------------------------------------SETUP-FUNCTIONS---------------------------------------
   serial_setup();
   lcd_setup();
