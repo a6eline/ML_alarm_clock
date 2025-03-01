@@ -6,15 +6,16 @@
 #include "functions.h"
 #include "pins.h"
 
-//-------------------------------------------------------------------SERIAL------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------SERIAL---------------------------------------------------------------------------
 
 // functions.cpp --- sets up the serial monitor
 void serial_setup() {
-  Serial.begin(9600); // Setup for serial monitor 
+  Serial.begin(9600); // Setup for serial monitor
   while (!Serial); 
 }
 
-//-------------------------------------------------------------------BUZZER------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------BUZZER---------------------------------------------------------------------------
+
 // functions.cpp --- setting up the buzzer
 void buzzer_setup() {
   pinMode(PINS::BUZZER, OUTPUT);
@@ -26,7 +27,7 @@ void silence() {
   digitalWrite(PINS::BUZZER, LOW); 
 }
 
-// functions.cpp --- buzzer beeping noise 
+// functions.cpp --- buzzer beeping noise
 void beep(void) {
   digitalWrite(PINS::BUZZER, HIGH); 
 }
@@ -42,11 +43,11 @@ void pulsed_beep() {
   }
 }
 
-//-------------------------------------------------------------------BUTTON------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------BUTTON---------------------------------------------------------------------------
 
 // functions.cpp --- sets up the button pins, attatches a silence interupt.
 void button_setup() {
-  pinMode(PINS::BUTTON,INPUT);  // there is an externel pullup resistor 
+  pinMode(PINS::BUTTON,INPUT);  // there is an externel pullup resistor
   // attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), on_button, FALLING); 
   //    ^ uncommented because not needed with FSM, but maybe can include if you want
 }
@@ -74,7 +75,7 @@ void on_button() {
   Serial.println("Button Pressed!");
 }
 
-//-------------------------------------------------------------------LED------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------LED---------------------------------------------------------------------------
 
 // functions.cpp --- void function, sets up the LED_PINs 
 void led_setup() {
@@ -95,7 +96,7 @@ void led_status(Signal status) {
   }
 }
 
-//-------------------------------------------------------------------MISC------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------MISC---------------------------------------------------------------------------
 
 // functions.cpp --- counts 3 seconds without delay, doesnt work tho, i'll sort that out later
 void count_second(int n) {

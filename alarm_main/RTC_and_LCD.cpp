@@ -39,7 +39,7 @@ RTC_DS3231 rtc;
 
 volatile bool alarm_triggered = false;
 
-//---------------------------------------------------------------------RTC----------------------------------------------------------------------------------------------
+//-------------------------------------------------------------checkRTC---------------------------------------------------------------------------
 
 // RTC_and_LCD.cpp --- checks if the I2C communication is successful and if the RTC module has power
 void checkRTC() {
@@ -56,6 +56,7 @@ void checkRTC() {
   lcd.clear();
 
   //-------------------------CHECK-I2C/RTC-------------------------------
+
   // Check if I2C communication with RTC is unsuccessful
   while (!rtc.begin()) { 
     lcd.clear(); lcd.setCursor(0, 0); 
@@ -70,12 +71,14 @@ void checkRTC() {
   }
 
   //-------------------------CHECK-POWER-------------------------------
+  
   // If RTC has lost power
   if (rtc.lostPower()) { 
     lcd.print("RTC lost power");
     Serial.println("RTC lost power..."); 
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); 
-  } //-------------------------INITIALISED!-------------------------------
+  } 
+  //-------------------------INITIALISED!-------------------------------
   else {
     lcd.print("RTC Initialized");
     Serial.println("RTC Initialized"); 
@@ -84,6 +87,8 @@ void checkRTC() {
   Serial.println();  
   delay(2000); // display message for 2 seconds
 }
+
+//-------------------------------------------------------------rtc_setup---------------------------------------------------------------------------
 
 // RTC_and_LCD.cpp --- set up the RTC module's pins, attatch pin interupt, disable previous alarms and more - check 
 void rtc_setup() {
@@ -111,7 +116,7 @@ void rtc_setup() {
   Serial.println(" C");
 }
 
-//----------------------------------------------------------------LCD-1602---------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------lcd_setup---------------------------------------------------------------------------
 
 // RTC_and_LCD.cpp --- clear LCD, print success signal and set the screen to 16x2
 void lcd_setup() {
@@ -126,6 +131,8 @@ void lcd_test() {
   lcd.setCursor(0, 0);
   lcd.print("Test");
 }
+
+//-------------------------------------------------------------display_time---------------------------------------------------------------------------
 
 // array to convert weekday number to a string ---> dayNames[0] = Sun, 1 = Mon, 2 = Tue...
 constexpr char* dayNames[] = {"Sun" , "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
@@ -171,7 +178,7 @@ void display_time() {
   }
 }
 
-//---------------------------------------------------------------------TIMER----------------------------------------------------------------------------------------------
+//-------------------------------------------------------------timer---------------------------------------------------------------------------
 
 // RTC_and_LCD.cpp --- this is a hardcoded timer with any mode you want (template timer in RTC_and_LCD.h)
 void timer(int hour, int minute, int second, Ds3231Alarm1Mode alarm_mode) {
@@ -187,7 +194,7 @@ void timer(int hour, int minute, int second, Ds3231Alarm1Mode alarm_mode) {
   }
 }
 
-//---------------------------------------------------------------------ALARM----------------------------------------------------------------------------------------------
+//-------------------------------------------------------------set_daily_alarm---------------------------------------------------------------------------
 
 // RTC_and_LCD.cpp --- this function sets an alarm everyday for HOUR:MINUTE in 24hr code
 void set_daily_alarm(const AlarmTime& time) {
@@ -214,7 +221,7 @@ void set_alarm() {
   }
 }
 
-//------------------------------------------------------------------DELETE-ALARM-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------clear_alarm---------------------------------------------------------------------------
 
 void clear_alarm(Alarm alarm) { 
   // initiating array indexes, 
@@ -241,7 +248,7 @@ void clear_alarm(Alarm alarm) {
   }
 }
 
-//------------------------------------------------------------------ALARM-FIRED-BOOL-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------alarm_fired---------------------------------------------------------------------------
 
 // RTC_and_LCD.cpp --- bool to check whether alarm is fired
 bool alarm_fired() {
@@ -249,7 +256,7 @@ bool alarm_fired() {
   return (digitalRead(PINS::RTC_SQW) == LOW);
 }
 
-//-------------------------------------------------------------------MISC------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------on_alarm---------------------------------------------------------------------------
 
 // RTC_and_LCD.cpp --- serial print that the alarm has occured. needed to attatch interupt to the SQW 
 void on_alarm() {

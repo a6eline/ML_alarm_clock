@@ -11,7 +11,7 @@
 
 
 namespace PINS {
-  //--LCD1602 (4-bit mode)----
+  //--LCD1602----------------
   constexpr auto LCD_RS = 5;
   constexpr auto LCD_E  = 6;
   constexpr auto LCD_D4 = 7;
@@ -30,10 +30,4 @@ namespace PINS {
 
   //--LED-(Optional)-----------
   constexpr auto LED = 11;
-
-  //--INMP441(I²S)-(Optional)-- 
-  // constexpr auto I2S_SD   = 2; // serial data 
-  // constexpr auto I2S_WS   = 3; // word select 
-  // constexpr auto I2S_SCK  = 4; // serial clock
-
 }

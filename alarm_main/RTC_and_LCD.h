@@ -10,7 +10,7 @@
 
 extern RTC_DS3231 rtc; 
 
-// ------------------------ ENUM-ALIASING -------------------------------
+//-------------------------------------------------------------ENUM-ALIASING---------------------------------------------------------------------------
 
 // Ds3231Alarm1Mode & Ds3231Alarm2Mode is defined in RTClib.h line 55-76
 //  ^ https://github.com/adafruit/RTClib/blob/master/src/RTClib.h#L378
@@ -38,6 +38,9 @@ struct AlarmTime {
 
 // AlarmDuration will be used for timers
 using AlarmDuration = AlarmTime;
+
+
+//-------------------------------------------------------------functions---------------------------------------------------------------------------
 
 //------------------------SETUP-------------------------------
 
@@ -71,8 +74,7 @@ bool alarm_fired();   // checks if alarm has been fired or not --> will be used 
 void on_alarm();          // serial.print when alarm occures, used in --> rtc_setup attatchInterupt() function
 
 
-
-//------------------------TEMPLATES-------------------------------
+//-------------------------------------------------------------TIMER-TEMPLATE---------------------------------------------------------------------------
 
 // RTC_and_LCD.cpp --- this is a timer template function which can go from seconds to hours and take in multiple types
 template<Alarm alarm> struct DefaultMode {};
@@ -84,7 +86,7 @@ void set_timer(const AlarmDuration& duration, M mode = DefaultMode<alarm>::mode)
   const auto &d = duration;  
   const auto hour = d.hour, minute = d.minute, second = d.second;
 
-  Serial.println();     Serial.print("TIMER --> ");
+  Serial.println();       Serial.print("TIMER --> ");
   Serial.print(d.hour);   Serial.print(" hr(s) and ");
   Serial.print(d.minute); Serial.print(" min(s) and ");
   Serial.print(d.second); Serial.print(" sec(s)");
