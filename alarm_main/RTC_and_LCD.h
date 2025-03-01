@@ -1,5 +1,5 @@
 
-//----------------------------------------------------------------RTC-and-LCD.h------------------------------------------------------------------------------------------------
+//==================================================================== RTC_and_LCD.cpp ====================================================================
 
 #pragma once
 
@@ -73,10 +73,6 @@ void on_alarm();          // serial.print when alarm occures, used in --> rtc_se
 
 
 //------------------------TEMPLATES-------------------------------
-// RTC_and_LCD.cpp --- this is a timer template function which can go from seconds to hours and take in multiple types
-// template<AlarmNum alarm>
-// struct AlarmModeTraits {}
-
 
 // RTC_and_LCD.cpp --- this is a timer template function which can go from seconds to hours and take in multiple types
 template<Alarm alarm> struct DefaultMode {};
