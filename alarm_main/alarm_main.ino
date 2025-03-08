@@ -54,7 +54,7 @@ enum class AlarmState : uint8_t {
 
 void setup() {
   delay(5000); // delay is required for certain boards to finish compilation/upload  
-  
+
   //-------------------------setup-modules-------------------------------
 
   serial_setup();
@@ -74,7 +74,8 @@ void setup() {
 
   // set_daily_alarm(AlarmTime {19, 25, 0}); // everyday alarm at HH:MM
   // set_alarm();
-}
+
+} // SETUP
 
 //=========================================================== loop() ====================================================================
 
@@ -121,7 +122,7 @@ void loop() {
   default:
     current_state = AlarmState::Idle; // Reset to Idle state to avoid instability
   }
-}
+} //LOOP
 
 //---------------------------------------------------------------------EXTRA-FUNCTIONS----------------------------------------------------------------------------------------------
 
