@@ -32,14 +32,14 @@
 
 //---------------------------------ARDUINO_NANO33BLE---------------------------------------
 
-#if defined(ARDUINO) && defined(ARDUINO_ARDUINO_NANO33BLE) 
+#if defined(ARDUINO) && defined(ARDUINO_ARDUINO_NANO33BLE)
   #include <TensorFlowLite.h> 
-  // #include "../wireless/33ble_connection.h" 
+  #include "wireless/33ble_connection.h"
 #endif // defined(ARDUINO) && !defined(ARDUINO_ARDUINO_NANO33BLE)
 
 //---------------------------------ESP32_ESP8266---------------------------------------
 
-// #if defined(ESP8266) || defined(ESP32) 
+// #if defined(ESP8266) || defined(ESP32)
 //   // #include "../wireless/esp_connection.h" 
 // #endif // defined(ARDUINO) && !defined(ARDUINO_ARDUINO_NANO33BLE)
 
@@ -75,6 +75,8 @@ void setup() {
 
   // set_daily_alarm(AlarmTime {19, 25, 0}); // everyday alarm at HH:MM
   // set_alarm();
+
+  test();
 
 } // SETUP
 

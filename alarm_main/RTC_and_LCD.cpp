@@ -92,7 +92,7 @@ void checkRTC() {
 // RTC_and_LCD.cpp --- set up the RTC module's pins, attatch pin interupt, disable previous alarms and more - check 
 void rtc_setup() {
   // ONLY SET TIME ONCE WHEN INITIATED 
-  // rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); 
+  rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); 
 
   pinMode(PINS::RTC_SQW, INPUT_PULLUP);                                     // Setting sqw pinmode to high --> LOW == alarm is fired 
   attachInterrupt(digitalPinToInterrupt(PINS::RTC_SQW), on_alarm, FALLING); // The interupt is triggered when the pin falls from high to low
