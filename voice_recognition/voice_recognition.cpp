@@ -19,7 +19,6 @@
 #include "audio_provider.h"
 #include "command_responder.h"
 #include "feature_provider.h"
-#include "main_functions.h"
 #include "micro_features_micro_model_settings.h"
 #include "micro_features_model.h"
 #include "recognize_commands.h"

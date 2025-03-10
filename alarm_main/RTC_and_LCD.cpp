@@ -36,7 +36,6 @@
 // Creating objects of the LCD and RTC 
 static LiquidCrystal lcd(PINS::LCD_RS, PINS::LCD_E, PINS::LCD_D4, PINS::LCD_D5, PINS::LCD_D6, PINS::LCD_D7); 
 RTC_DS3231 rtc; 
-
 volatile bool alarm_triggered = false;
 
 //-------------------------------------------------------------checkRTC---------------------------------------------------------------------------

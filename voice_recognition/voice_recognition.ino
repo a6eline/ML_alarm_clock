@@ -36,10 +36,6 @@
 // extracts useful features from raw sound
 // converts waveforms into spectrograms (which ai understands)
 
-#include "main_functions.h" 
-// contains entry points for the program setup() and loop() 
-// this isnt needeed on arduino IDE
-
 #include "micro_features_micro_model_settings.h"
 // declared -> only in micro_speech.ino
 // just contains constexprs of all the settings for the AI model

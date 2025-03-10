@@ -9,7 +9,6 @@
 
 #pragma once
 
-
 namespace PINS {
   //--LCD1602----------------
   constexpr auto LCD_RS = 5;

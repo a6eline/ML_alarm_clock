@@ -21,10 +21,6 @@
     // sets a static state and defaults to idle
     // does the main FSM system
 
-    // -----------------FUNCTIONS---------------
-    // check_and_print_current_state --> checks state change and prints...
-    // print_state --> prints state information in serial
-
   //------------------------IMPORTANT-INFO----------------------------
     // a state for checking voice recognition will be added in soon
     // idle  state is so that the device only checks for the SQW pin being high WHEN the alarm is off
@@ -34,13 +30,18 @@
 #include "functions.h"
 #include "pins.h"
 
-#if defined(ARDUINO) && defined(ARDUINO_ARDUINO_NANO33BLE) // if the board is ARDUINO's NANO33BLE
-#include <TensorFlowLite.h> // then include tensorflow library
-#endif  // defined(ARDUINO) && !defined(ARDUINO_ARDUINO_NANO33BLE)
+//---------------------------------ARDUINO_NANO33BLE---------------------------------------
 
-#if defined(ESP8266) || !defined(ESP32) // if the board is ESP8266 or ESP32
-#include "esp_connection.h" // then include this
-#endif  // defined(ARDUINO) && !defined(ARDUINO_ARDUINO_NANO33BLE)
+#if defined(ARDUINO) && defined(ARDUINO_ARDUINO_NANO33BLE)
+  #include "src/wireless/33ble_connection.h"
+  // #include "src/voice_recognition.h"
+#endif // defined(ARDUINO) && !defined(ARDUINO_ARDUINO_NANO33BLE)
+
+//---------------------------------ESP32_ESP8266---------------------------------------
+
+#if defined(ESP8266) || defined(ESP32)
+  #include "../wireless/esp_connection.h" 
+#endif // defined(ARDUINO) && !defined(ARDUINO_ARDUINO_NANO33BLE)
 
 //---------------------------------FINITE-STATE-MACHINE-ENUM---------------------------------------
 // this enum is for the states which the alarm will have
@@ -75,6 +76,8 @@ void setup() {
   // set_daily_alarm(AlarmTime {19, 25, 0}); // everyday alarm at HH:MM
   // set_alarm();
 
+  test();
+
 } // SETUP
 
 //=========================================================== loop() ====================================================================
@@ -84,7 +87,7 @@ static auto previous_state = AlarmState::AlarmOff;  // previous state
 
 void loop() {
   display_time(); // display the time onto LCD screen (RTC_and_LCD.cpp/h)
-  //print_SQW();  // checks SQW pin if you need to debug, uncomment to use
+  // print_SQW();  // checks SQW pin if you need to debug, uncomment to use
 
   //--------------------------------------FINITE-STATE-MACHINE----------------------------------------------
 
