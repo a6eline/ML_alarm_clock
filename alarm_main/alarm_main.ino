@@ -34,7 +34,7 @@
 
 #if defined(ARDUINO) && defined(ARDUINO_ARDUINO_NANO33BLE)
   #include <TensorFlowLite.h> 
-  #include "wireless/33ble_connection.h"
+  #include "src/wireless/33ble_connection.h"
 #endif // defined(ARDUINO) && !defined(ARDUINO_ARDUINO_NANO33BLE)
 
 //---------------------------------ESP32_ESP8266---------------------------------------

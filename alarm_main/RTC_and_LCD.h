@@ -76,11 +76,11 @@ void on_alarm();          // serial.print when alarm occures, used in --> rtc_se
 
 //-------------------------------------------------------------TIMER-TEMPLATE---------------------------------------------------------------------------
 
-// RTC_and_LCD.cpp --- this is a timer template function which can go from seconds to hours and take in multiple types
 template<Alarm alarm> struct DefaultMode {};
 template<> struct DefaultMode<Alarm::A1> { static constexpr auto mode = AlarmMode::A1_HOUR; };
 template<> struct DefaultMode<Alarm::A2> { static constexpr auto mode = AlarmMode::A2_HOUR; };
 
+// RTC_and_LCD.h --- this is a timer template function which can go from seconds to hours and take in multiple types
 template<Alarm alarm, typename M>
 void set_timer(const AlarmDuration& duration, M mode = DefaultMode<alarm>::mode) {
   const auto &d = duration;  

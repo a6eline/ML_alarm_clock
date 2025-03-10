@@ -14,48 +14,93 @@
 
 //---------------------------------------------------------------------PREPROCESSOR ----------------------------------------------------------------------------------------------
 
-#include <TensorFlowLite.h>
+// ------------------------MADE-HEADERS-------------------------------
 
-#include "audio_provider.h"
+#include <TensorFlowLite.h> 
+// implementation -> everywhere
+// includes TensorFlow Lite Micro, TensorFlow Lite optimized for microcontrollers
+// it enables loading models, running inference and processing neural network operations
+
+#include "audio_provider.h" 
+// imeplementations -> audio_provider.cpp
+// provides audio data from a microphone or other source
+// converts raw sound into something the AI model can process
+
 #include "command_responder.h"
-#include "feature_provider.h"
-#include "main_functions.h"
-#include "micro_features_micro_model_settings.h"
-#include "micro_features_model.h"
-#include "recognize_commands.h"
-#include "tensorflow/lite/micro/micro_interpreter.h"
-#include "tensorflow/lite/micro/micro_log.h"
-#include "tensorflow/lite/micro/micro_mutable_op_resolver.h"
-#include "tensorflow/lite/micro/system_setup.h"
-#include "tensorflow/lite/schema/schema_generated.h"
+// implementation ->  command_responder.cpp
+// handles how the system responds to recognized commands
+// if yes or no is detected, it changes the LED colour and prints a message
 
-//---------------------------------------------------------------------GLOBALS----------------------------------------------------------------------------------------------
+#include "feature_provider.h"
+// implemetation -> feature_provider.cpp 
+// extracts useful features from raw sound
+// converts waveforms into spectrograms (which ai understands)
+
+#include "micro_features_micro_model_settings.h"
+// declared -> only in micro_speech.ino
+// just contains constexprs of all the settings for the AI model
+// such as input size, feature extraction parameters or category labels
+
+#include "micro_features_model.h" 
+// implemented in micro_features_model.cpp
+// loads the pre-trained TensorFlow Lite model, stored in g_model array
+
+#include "recognize_commands.h"
+// implemented -> recognize_commands.cpp
+// helps classify detected voice commands like yes or no
+// keeps track of confidence levels and suppress false triggers
+
+// ------------------------TENSOR-LITE-MICRO--------------------------------
+
+#include "tensorflow/lite/micro/micro_interpreter.h" 
+// a part of TensorFlow Lite Micro
+// responsible for runnning the AI model
+
+#include "tensorflow/lite/micro/micro_log.h"
+// a part of TensorFlow Lite Micro
+// handles debugging messages
+
+#include "tensorflow/lite/micro/micro_mutable_op_resolver.h"
+// a part of TensorFlow Lite Micro
+// registers required tensorflow operations like convulution 
+
+#include "tensorflow/lite/micro/system_setup.h"
+// a part of TensorFlow Lite Micro
+// initializes system specific features
+
+#include "tensorflow/lite/schema/schema_generated.h"
+// a part of TensorFlow Lite Micro
+// contrains TFLite model schema (ensuring model compatibility)
+
+
+#undef PROFILE_MICRO_SPEECH // use #define to enable performance profiling, #undef to remove
+
+//---------------------------------------------------------------------GLOBALS ----------------------------------------------------------------------------------------------
 
 // ------------------------NAMESPACE-------------------------------
+
 // these are pointers to key objects in the tensorflow lite micro system
 namespace {
-  const tflite::Model* model = nullptr;             // model            -> holds the tflite model, later used in setup()
-  tflite::MicroInterpreter* interpreter = nullptr;  // interpreter      -> responsible for running the model
-  TfLiteTensor* model_input = nullptr;              // model_input      -> holds the input tensor where we feed in audio features
-  FeatureProvider* feature_provider = nullptr;      // feature_provider -> converts raw audio into spectrograms (features suitable for the model) 
-  RecognizeCommands* recognizer = nullptr;          // recognizer       -> helps detect valid voice commands based on model output
-  int32_t previous_time = 0;                        // previous_time    -> stores timestamp for last processed audio frame for the system to know when audio data ia vailable
-  
-  
-  constexpr int kTensorArenaSize = 10 * 1024;         // tensor_arean     -> memory buffer for storing model inputs, outputs and intermediate values
-                                                      // The size of this will depend on the model you're using, and may need to be determined by experimentation.    
-  alignas(16) uint8_t tensor_arena[kTensorArenaSize]; // Keep aligned to 16 bytes for CMSIS 
-  
-  int8_t feature_buffer[kFeatureElementCount];      // feature_buffer   -> stores extracted audio features before they are fed into th emodel
-  int8_t* model_input_buffer = nullptr;             // model_input_buffer -> used to pass feature data into the model
+const tflite::Model* model = nullptr;             // model            -> holds the tflite model, later used in setup()
+tflite::MicroInterpreter* interpreter = nullptr;  // interpreter      -> responsible for running the model
+TfLiteTensor* model_input = nullptr;              // model_input      -> holds the input tensor where we feed in audio features
+FeatureProvider* feature_provider = nullptr;      // feature_provider -> converts raw audio into spectrograms (features suitable for the model) 
+RecognizeCommands* recognizer = nullptr;          // recognizer       -> helps detect valid voice commands based on model output
+int32_t previous_time = 0;                        // previous_time    -> stores timestamp for last processed audio frame for the system to know when audio data ia vailable
+
+
+constexpr int kTensorArenaSize = 10 * 1024;         // tensor_arena   -> memory buffer for storing model inputs, outputs and intermediate values
+                                                    // The size of this will depend on the model you're using, and may need to be determined by experimentation.    
+alignas(16) uint8_t tensor_arena[kTensorArenaSize]; // Keep aligned to 16 bytes for CMSIS 
+
+int8_t feature_buffer[kFeatureElementCount];      // feature_buffer   -> stores extracted audio features before they are fed into the model
+int8_t* model_input_buffer = nullptr;             // model_input_buffer -> used to pass feature data into the model
 }  // namespace
+
 
 //==================================================================== SETUP() ====================================================================
 
-//---------------------------------------------------------------------voiceRecogitionSetup----------------------------------------------------------------------------------------------
-
-// this function includes all the setup functions from micro_speech.ino in the micro_speech example
-void voiceRecogitionSetup() {
+void setup() {
   tflite::InitializeTarget(); // initialises the tensorflow lite micro system for the hardware
 
   //------------------------------------------MAPPING-MODEL---------------------------------------
@@ -139,15 +184,27 @@ void voiceRecogitionSetup() {
     return;
   }
   MicroPrintf("Initialization complete");
-}
 
+} //setup()
 
 //==================================================================== LOOP() ====================================================================
 
-//---------------------------------------------------------------------GetLatestAudio----------------------------------------------------------------------------------------------
+void loop() {
 
-// voice_recognition.cpp --> Fetch the spectrogram for the current time.
-void GetLatestAudio() {
+//---------------------------------------PROFILE_MICRO_SPEECH----------------------------------------
+
+// profile the performance of the program only if defined
+#ifdef PROFILE_MICRO_SPEECH
+  const  uint32_t prof_start  = millis();
+  static uint32_t prof_count  = 0;
+  static uint32_t prof_sum    = 0;
+  static uint32_t prof_min    = std::numeric_limits<uint32_t>::max();
+  static uint32_t prof_max    = 0;
+#endif  // PROFILE_MICRO_SPEECH
+
+  //---------------------------------------GET-LATEST-AUDIO----------------------------------------
+
+  // Fetch the spectrogram for the current time.
   const int32_t current_time = LatestAudioTimestamp();
   int how_many_new_slices = 0;
   TfLiteStatus feature_status = feature_provider->PopulateFeatureData(
@@ -162,11 +219,9 @@ void GetLatestAudio() {
   if (how_many_new_slices == 0) {
     return;
   }
-} // RETURN int32_t PREVIOUS_TIME
 
-//---------------------------------------------------------------------runModel----------------------------------------------------------------------------------------------
+  //---------------------------------------RUN-MODEL----------------------------------------
 
-void RunModel() {
   // Copy feature buffer to input tensor
   for (int i = 0; i < kFeatureElementCount; i++) {
     model_input_buffer[i] = feature_buffer[i];
@@ -178,11 +233,9 @@ void RunModel() {
     MicroPrintf("Invoke failed");
     return;
   }
-}
 
-//---------------------------------------------------------------------runModel----------------------------------------------------------------------------------------------
+  //-------------------------------------ANALYSE-OUTPUT--------------------------------------
 
-void AnalyseOutput() {
   // Obtain a pointer to the output tensor
   TfLiteTensor* output = interpreter->output(0);
   // Determine whether a command was recognized based on the output of inference
@@ -195,6 +248,29 @@ void AnalyseOutput() {
     MicroPrintf("RecognizeCommands::ProcessLatestResults() failed");
     return;
   }
+  // Do something based on the recognized command. The default implementation
+  // just prints to the error console, but you should replace this with your
+  // own function for a real application.
+  
+  //-------------------------------------RESPOND-TO-OUTPUT--------------------------------------
+
+  RespondToCommand(current_time, found_command, score, is_new_command); // from arduino_command_responder.cpp
+
+//---------------------------------------PROFILE_MICRO_SPEECH----------------------------------------
+
+#ifdef PROFILE_MICRO_SPEECH
+  const uint32_t prof_end = millis();
+  if (++prof_count > 10) {
+    uint32_t elapsed = prof_end - prof_start;
+    prof_sum += elapsed;
+
+    if (elapsed < prof_min) {
+      prof_min = elapsed;
+    } if (elapsed > prof_max) {
+      prof_max = elapsed;
+    } if (prof_count % 300 == 0) {
+      MicroPrintf("## time: min %dms  max %dms  avg %dms", prof_min, prof_max, prof_sum / prof_count);
+    }
+  }
+#endif  // PROFILE_MICRO_SPEECH
 }
-
-
