@@ -33,15 +33,15 @@
 //---------------------------------ARDUINO_NANO33BLE---------------------------------------
 
 #if defined(ARDUINO) && defined(ARDUINO_ARDUINO_NANO33BLE)
-  #include <TensorFlowLite.h> 
   #include "src/wireless/33ble_connection.h"
+  // #include "src/voice_recognition.h"
 #endif // defined(ARDUINO) && !defined(ARDUINO_ARDUINO_NANO33BLE)
 
 //---------------------------------ESP32_ESP8266---------------------------------------
 
-// #if defined(ESP8266) || defined(ESP32)
-//   // #include "../wireless/esp_connection.h" 
-// #endif // defined(ARDUINO) && !defined(ARDUINO_ARDUINO_NANO33BLE)
+#if defined(ESP8266) || defined(ESP32)
+  #include "../wireless/esp_connection.h" 
+#endif // defined(ARDUINO) && !defined(ARDUINO_ARDUINO_NANO33BLE)
 
 //---------------------------------FINITE-STATE-MACHINE-ENUM---------------------------------------
 // this enum is for the states which the alarm will have

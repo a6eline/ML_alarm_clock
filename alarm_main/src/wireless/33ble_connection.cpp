@@ -4,5 +4,5 @@
 #include "33ble_connection.h"
 
 void test() {
-  Serial.print("FILEDIRECTORYTEST");
+  Serial.println("FILE DIRECTORY TEST");
 }
