@@ -25,9 +25,9 @@ void led_status(Signal status); // toggles LED on or off
 
 //------------------------BUTTON----------------------------
 
-void button_setup();  // button setup
-bool button_pressed(); // checks if button has been pressed
-void on_button();         // button pressed serial print message
+void button_setup();    // button setup
+bool button_pressed();  // checks if button has been pressed
+void on_button();       // button pressed serial print message
 
 //------------------------MISC------------------------------
 
