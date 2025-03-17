@@ -47,7 +47,7 @@ void pulsed_beep() {
 
 // functions.cpp --- sets up the button pins, attatches a silence interupt.
 void button_setup() {
-  pinMode(PINS::BUTTON,INPUT);  // there is an externel pullup resistor
+  pinMode(PINS::BUTTON,INPUT);  // there is an externel pullup resistor on the board
   // attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), on_button, FALLING); 
   //    ^ uncommented because not needed with FSM, but maybe can include if you want
 }

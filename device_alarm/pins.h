@@ -11,22 +11,22 @@
 
 namespace PINS {
   //--LCD1602----------------
-  constexpr auto LCD_RS = 5;
-  constexpr auto LCD_E  = 6;
-  constexpr auto LCD_D4 = 7;
-  constexpr auto LCD_D5 = 8;
-  constexpr auto LCD_D6 = 9;
-  constexpr auto LCD_D7 = 10;
+  constexpr int LCD_RS = 5;
+  constexpr int LCD_E  = 6;
+  constexpr int LCD_D4 = 7;
+  constexpr int LCD_D5 = 8;
+  constexpr int LCD_D6 = 9;
+  constexpr int LCD_D7 = 10;
 
   //--RTC-DS3231--------------
-  constexpr auto RTC_SQW = 2;
+  constexpr int RTC_SQW = 2;
 
   //--Buzzer-------------------
-  constexpr auto BUZZER = 3;
+  constexpr int BUZZER = 3;
 
   //--Button-(Optional)--------
-  constexpr auto BUTTON = 4;
+  constexpr int BUTTON = 4;
 
   //--LED-(Optional)-----------
-  constexpr auto LED = 11;
+  constexpr int LED = 11;
 }
