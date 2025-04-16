@@ -3,6 +3,7 @@ An alarm clock which has to be turned off remotely elsewhere using wireless comm
 
 Status: Ongoing 
 > ML Voice Recognition Model is made by @abbie_bola
+> FSM only has 2 states now, AlarmOff (which is like idle) and AlarmOn. Since before it was Idle, AlarmOn and AlarmOff - previously AlarmOff was just a transitionary state so not needed. 
 
 ## Board Prototype Photos
 The prototype uses an Arduino nano board since other ones are not available on Wowki.com all nano boards have the similar pinouts anyways. All jumpwires are pinned in the same place and SDA/SDL are in A4/A5 respectively - the [Nano ESP32](https://docs.arduino.cc/resources/pinouts/ABX00083-full-pinout.pdf) and [Nano 33 BLE Sense Rev2](https://docs.arduino.cc/resources/pinouts/ABX00031-full-pinout.pdf) for reference. There is no mic module in wowki.com unfortunately so was not able to show that - photos will be added soon! 
