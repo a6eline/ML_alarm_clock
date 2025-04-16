@@ -3,6 +3,7 @@ An alarm clock which has to be turned off remotely elsewhere using wireless comm
 
 Status: Ongoing 
 > ML Voice Recognition Model is made by @abbie_bola
+
 > FSM only has 2 states now, AlarmOff (which is like idle) and AlarmOn. Since before it was Idle, AlarmOn and AlarmOff - previously AlarmOff was just a transitionary state so not needed. Can not update code now as out of home for a while.
 
 ## Board Prototype Photos
